@@ -1,0 +1,43 @@
+專案流程
+
+npm install <套件名稱>		==>安裝套件
+npm uninstall <套件名稱>	==>解除安裝套件
+---------------------------------------------------------------------
+後端部分
+npm init --yes
+        補上"type": "module",
+	"scripts": {"test": "echo \"Error: no test specified\" && exit 1"},
+	改成
+	"scripts": {"dev": "nodemon index.js"},
+npm i mongoose dotenv express validator http-status-codes bcrypt passport passport-local passport-jwt jsonwebtoken
+(bcrypt => 密碼的加密)、(passport => 帳號密碼的驗證)、validator => 資料驗證)
+npm i -D nodemon
+npm init @eslint/config
+(勾選以下選項)
+
+	√ How	 would you like to use ESLint? · problems
+	> To check syntax and find problems
+    
+	√ What type of modules does your project use? · esm
+	> JavaScript modules (import/export)
+
+	√ Which framework(框架) does your project use? · none
+	> None of these
+
+	√ Does your project use TypeScript? · javascript (no)
+	> no
+
+	√ Where does your code run? · node (以空白建點按√，確認後再 enter)
+		   Browser
+		√ Node
+	The config that you've selected requires the following dependencies:
+ 
+	eslint, globals, @eslint/js
+	√ Would you like to install them now? · Yes
+	> yes
+
+	√ Which package manager do you want to use? · npm
+	> npm
+
+eslint的設定
+npm i -D eslint-config-prettier eslint-plugin-prettier
