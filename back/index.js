@@ -3,6 +3,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 import routerUser from './routers/user.js'
+import './passport.js'
 
 mongoose
   .connect(process.env.DB_URL)

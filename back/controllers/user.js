@@ -1,5 +1,6 @@
 import User from '../models/user.js'
 import { StatusCodes } from 'http-status-codes'
+import jwt from 'jsonwebtoken'
 
 // 註冊帳號
 export const create = async (req, res) => {
@@ -32,5 +33,14 @@ export const create = async (req, res) => {
         message: 'severError',
       })
     }
+  }
+}
+
+export const login = async (req, res) => {
+  try {
+    // jwt.sign(儲存資料, SECRET, 設定)
+    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+  } catch (error) {
+    console.log(error)
   }
 }
