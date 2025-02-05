@@ -36,11 +36,29 @@ export const create = async (req, res) => {
   }
 }
 
+// 登入帳號
 export const login = async (req, res) => {
   try {
     // jwt.sign(儲存資料, SECRET, 設定)
+    // SECRET 是 jwt 拿來驗證的密鑰
     const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+    req.user.tokens.push(token)
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: {
+        token,
+        account: req.user.account,
+        role: req.user.role,
+        cart: req.user.cartQuantity,
+      },
+    })
   } catch (error) {
     console.log(error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: 'serverError',
+    })
   }
 }

@@ -14,6 +14,7 @@ export const login = (req, res, next) => {
       if (info.message === 'Missing credentials') {
         info.message = 'requestFormatError'
       }
+      // 一定要下 return 不然直接進到下一步，會出錯
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: info.message,
