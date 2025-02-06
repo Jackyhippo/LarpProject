@@ -41,6 +41,9 @@ export const login = async (req, res) => {
   try {
     // jwt.sign(儲存資料, SECRET, 設定)
     // SECRET 是 jwt 拿來驗證的密鑰
+    // 傳入的第一個參數是包含用戶 _id 的對象，這是 JWT 的有效資料
+    // 第二個參數是密鑰 process.env.JWT_SECRET，是用來加密 JWT 的密鑰
+    // 第三個參數是設定過期時間為 7 天
     const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
     req.user.tokens.push(token)
     await req.user.save()
@@ -61,4 +64,18 @@ export const login = async (req, res) => {
       message: 'serverError',
     })
   }
+}
+
+// 檢視用戶資料
+export const profile = async (req, res) => {
+  // 用戶成功登入後，從 req.user 中取出用戶資料，並回應
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: '',
+    result: {
+      account: req.user.account,
+      role: req.user.role,
+      cart: req.user.cartQuantity,
+    },
+  })
 }
