@@ -41,3 +41,20 @@ npm init @eslint/config
 
 eslint的設定
 npm i -D eslint-config-prettier eslint-plugin-prettier
+
+---------------------------------------------------------------------
+前端部分
+npm create vuetify@latest
+
+	√ Project name: ... vuetify-project
+	√ Which preset would you like to install? » Recommended (Everything from Default. Adds auto importing, layouts & pinia)
+	√ Use TypeScript? ... √ No / Yes
+	√ Would you like to install dependencies with yarn, npm, pnpm, or bun? » npm
+	√ Install Dependencies? ... No / √ Yes
+
+npm i -D prettier @vue/eslint-config-prettier
+npm install vue-i18n@10
+(vue-i18n@10 => 翻譯)
+
+
+

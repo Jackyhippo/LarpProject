@@ -1,4 +1,7 @@
+import { zhHant } from 'vuetify/locale'
+
 export default {
+  $vuetify: zhHant,
   api: {
     userAccountRequired: '使用者帳號必填',
     userAccountTooShort: '使用者帳號太短',
