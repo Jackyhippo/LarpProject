@@ -2,6 +2,15 @@ import { zhHant } from 'vuetify/locale'
 
 export default {
   $vuetify: zhHant,
+  nav: {
+    register: '註冊',
+    login: '登入',
+  },
+  user: {
+    account: '帳號',
+    email: '信箱',
+    password: '密碼',
+  },
   api: {
     userAccountRequired: '使用者帳號必填',
     userAccountTooShort: '使用者帳號太短',
@@ -13,6 +22,7 @@ export default {
     userPasswordTooShort: '使用者密碼太短',
     userPasswordTooLong: '使用者密碼太長',
     userPasswordIncorrect: '密碼錯誤',
+    userPasswordNotMatch: '密碼不符',
 
     userEmailRequired: '使用者信箱必填',
     userEmailInvalid: '使用者信箱格式不符',

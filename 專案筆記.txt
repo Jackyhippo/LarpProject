@@ -55,6 +55,8 @@ npm create vuetify@latest
 npm i -D prettier @vue/eslint-config-prettier
 npm install vue-i18n@10
 (vue-i18n@10 => 翻譯)
+npm i vee-validate validator yup
+npm i axios pinia-plugin-persistedstate
 
 
 

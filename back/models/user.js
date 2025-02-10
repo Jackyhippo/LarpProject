@@ -23,7 +23,7 @@ const schema = new Schema(
       required: [true, 'userAccountRequired'],
       minlength: [4, 'userAccountTooShort'],
       maxlength: [20, 'userAccountTooLong'],
-      // 必填
+      // 唯一性
       unique: true,
       validate: {
         validator(value) {
