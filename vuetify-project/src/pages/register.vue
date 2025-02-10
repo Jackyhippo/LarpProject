@@ -6,7 +6,7 @@
       </v-col>
       <v-divider></v-divider>
       <v-col cols="12" sm="4">
-        <v-form>
+        <v-form :disabled="isSubmitting" @submit.prevent="submit">
           <v-text-field
             v-model="account.value.value"
             :error-messages="account.errorMessage.value"
@@ -22,12 +22,27 @@
           />
           <v-text-field
             v-model="password.value.value"
+            type="password"
             :error-messages="password.errorMessage.value"
             :label="$t('user.password')"
             minlength="4"
             maxlength="20"
             counter
           />
+          <v-text-field
+            v-model="passwordConfirm.value.value"
+            type="password"
+            :error-messages="passwordConfirm.errorMessage.value"
+            :label="$t('user.passwordConfirm')"
+            minlength="4"
+            maxlength="20"
+            counter
+          />
+          <div class="text-center">
+            <v-btn :loading="isSubmitting" type="submit" color="green">
+              {{ $t('register.submit') }}
+            </v-btn>
+          </div>
         </v-form>
       </v-col>
     </v-row>
@@ -39,8 +54,10 @@ import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import validator from 'validator'
 import { useI18n } from 'vue-i18n'
+import { useAxios } from '@/composables/axios'
 
 const { t } = useI18n()
+const { api } = useAxios()
 
 // 驗證用
 const schema = yup.object({
@@ -82,4 +99,17 @@ const { handleSubmit, isSubmitting } = useForm({
 const account = useField('account')
 const email = useField('email')
 const password = useField('password')
+const passwordConfirm = useField('passwordConfirm')
+
+const submit = handleSubmit(async (values) => {
+  try {
+    await api.post('/user', {
+      account: values.account,
+      email: values.email,
+      password: values.password,
+    })
+  } catch (error) {
+    console.log(error)
+  }
+})
 </script>

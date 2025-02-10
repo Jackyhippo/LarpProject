@@ -42,6 +42,9 @@ npm init @eslint/config
 eslint的設定
 npm i -D eslint-config-prettier eslint-plugin-prettier
 
+處理跨網域的請求
+npm i cors
+
 ---------------------------------------------------------------------
 前端部分
 npm create vuetify@latest

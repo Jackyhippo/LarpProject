@@ -6,10 +6,14 @@ export default {
     register: '註冊',
     login: '登入',
   },
+  register: {
+    submit: '建立帳號',
+  },
   user: {
     account: '帳號',
     email: '信箱',
     password: '密碼',
+    passwordConfirm: '密碼確認',
   },
   api: {
     userAccountRequired: '使用者帳號必填',
