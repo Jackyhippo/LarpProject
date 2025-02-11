@@ -5,13 +5,30 @@
  */
 
 // Composables
-import { createRouter, createWebHashHistory } from 'vue-router/auto'  // 手動修改部分(createWebHashHistory)
+import { createRouter, createWebHashHistory, START_LOCATION } from 'vue-router/auto' // 手動修改部分(createWebHashHistory)
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
+import { useAxios } from '@/composables/axios'
+import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),  // 手動修改部分(createWebHashHistory)
+  history: createWebHashHistory(import.meta.env.BASE_URL), // 手動修改部分(createWebHashHistory)
   routes: setupLayouts(routes),
+})
+
+router.beforeEach(async (to, from, next) => {
+  const { apiAuth } = useAxios()
+  const user = useUserStore()
+  if (from === START_LOCATION && user.isLoggedIn) {
+    try {
+      const { data } = await apiAuth.get('/user/profile')
+      user.login(data.result)
+    } catch (error) {
+      console.log(error)
+      user.logout()
+    }
+  }
+  next()
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

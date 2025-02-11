@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="6">
-        <h1 class="text-center">{{ $t('nav.register') }}</h1>
+        <h1 class="text-center">{{ $t('nav.login') }}</h1>
       </v-col>
       <v-divider></v-divider>
       <v-col cols="12" sm="4">
@@ -16,11 +16,6 @@
             counter
           />
           <v-text-field
-            v-model="email.value.value"
-            :error-messages="email.errorMessage.value"
-            :label="$t('user.email')"
-          />
-          <v-text-field
             v-model="password.value.value"
             type="password"
             :error-messages="password.errorMessage.value"
@@ -29,18 +24,9 @@
             maxlength="20"
             counter
           />
-          <v-text-field
-            v-model="passwordConfirm.value.value"
-            type="password"
-            :error-messages="passwordConfirm.errorMessage.value"
-            :label="$t('user.passwordConfirm')"
-            minlength="4"
-            maxlength="20"
-            counter
-          />
           <div class="text-center">
             <v-btn :loading="isSubmitting" type="submit" color="green">
-              {{ $t('register.submit') }}
+              {{ $t('login.submit') }}
             </v-btn>
           </div>
         </v-form>
@@ -57,11 +43,13 @@ import { useI18n } from 'vue-i18n'
 import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
 const { api } = useAxios()
 const createSnackbar = useSnackbar()
 const router = useRouter()
+const user = useUserStore()
 
 // 驗證用
 const schema = yup.object({
@@ -78,22 +66,11 @@ const schema = yup.object({
     .test('isAlphanumeric', t('api.userAccountInvalid'), (value) =>
       validator.isAlphanumeric(value),
     ),
-  email: yup
-    .string()
-    .required(t('api.userEmailRequired'))
-    .test('isEmail', t('api.userEmailInvalid'), (value) => validator.isEmail(value)),
   password: yup
     .string()
     .required(t('api.userPasswordRequired'))
     .min(4, t('api.userPasswordTooShort'))
     .max(20, t('api.userPasswordTooLong')),
-  passwordConfirm: yup
-    .string()
-    .required(t('api.passwordConfirmRequired'))
-    // oneOf(陣列, 訊息)  必須要是陣列內其中一個值
-    // .ref(欄位名稱)     取得欄位的值
-    // .ref(password)     password 欄位的值
-    .oneOf([yup.ref('password')], t('api.userPasswordNotMatch')),
 })
 
 // 建立表單，注意 useForm 要在 useField 前面(先有表單才能使用欄位)
@@ -102,24 +79,22 @@ const { handleSubmit, isSubmitting } = useForm({
 })
 // 建立欄位 (名稱要跟上方驗證相同)
 const account = useField('account')
-const email = useField('email')
 const password = useField('password')
-const passwordConfirm = useField('passwordConfirm')
 
 const submit = handleSubmit(async (values) => {
   try {
-    await api.post('/user', {
+    const { data } = await api.post('/user/login', {
       account: values.account,
-      email: values.email,
       password: values.password,
     })
+    user.login(data.result)
     createSnackbar({
-      text: t('register.success'),
+      text: t('login.success'),
       snackbarProps: {
         color: 'green',
       },
     })
-    router.push('/login')
+    router.push('/')
   } catch (error) {
     console.log(error)
     createSnackbar({

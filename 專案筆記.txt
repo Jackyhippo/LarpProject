@@ -60,6 +60,8 @@ npm install vue-i18n@10
 (vue-i18n@10 => 翻譯)
 npm i vee-validate validator yup
 npm i axios pinia-plugin-persistedstate
+npm i vuetify-use-dialog
+(vuetify-use-dialog => 讓通知視窗的code變簡單)
 
 
 

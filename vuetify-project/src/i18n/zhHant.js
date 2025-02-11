@@ -8,6 +8,11 @@ export default {
   },
   register: {
     submit: '建立帳號',
+    success: '註冊成功',
+  },
+  login: {
+    submit: '登入',
+    success: '登入成功',
   },
   user: {
     account: '帳號',
@@ -23,6 +28,7 @@ export default {
     userAccountDuplicate: '使用者帳號重複',
 
     userPasswordRequired: '使用者密碼必填',
+    passwordConfirmRequired: '密碼確認必填',
     userPasswordTooShort: '使用者密碼太短',
     userPasswordTooLong: '使用者密碼太長',
     userPasswordIncorrect: '密碼錯誤',
@@ -49,5 +55,6 @@ export default {
 
     requestFormatError: '請求格式錯誤',
     severError: '伺服器錯誤',
+    unknownError: '未知錯誤',
   },
 }
