@@ -3,9 +3,9 @@
     <v-container class="d-flex align-center">
       <v-btn to="/" :active="false">購物網站</v-btn>
       <v-spacer />
-      <v-btn v-for="nav of navs" :key="nav.to" :to="nav.to" :prepend-icon="nav.icon">
-        {{ nav.text }}
-      </v-btn>
+      <template v-for="nav of navs" :key="nav.to">
+        <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">{{ nav.text }}</v-btn>
+      </template>
     </v-container>
   </v-app-bar>
   <v-main>
@@ -16,14 +16,19 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
+const user = useUserStore()
 
 // 導覽列項目
 const navs = computed(() => {
   return [
-    { to: '/register', text: t('nav.register'), icon: 'mdi-account-plus' },
-    { to: '/login', text: t('nav.login'), icon: 'mdi-account-arrow-left' },
+    { to: '/register', text: t('nav.register'), icon: 'mdi-account-plus', show: !user.isLoggedIn },
+    { to: '/login', text: t('nav.login'), icon: 'mdi-account-arrow-left', show: !user.isLoggedIn },
+    { to: '/cart', text: t('nav.cart'), icon: 'mdi-book', show: user.isLoggedIn },
+    { to: '/orders', text: t('nav.orders'), icon: 'mdi-format-list-bulleted', show: user.isLoggedIn },
+    { to: '/admin', text: t('nav.admin'), icon: 'mdi-cog', show: user.isLoggedIn && user.isAdmin },
   ]
 })
 </script>

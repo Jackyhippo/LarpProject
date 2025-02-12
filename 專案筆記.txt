@@ -10,7 +10,7 @@ npm init --yes
 	改成
 	"scripts": {"dev": "nodemon index.js"},
 npm i mongoose dotenv express validator http-status-codes bcrypt passport passport-local passport-jwt jsonwebtoken
-(bcrypt => 密碼的加密)、(passport => 帳號密碼的驗證)、validator => 資料驗證)
+(bcrypt => 密碼的加密、passport => 帳號密碼的驗證、validator => 資料驗證)
 npm i -D nodemon
 npm init @eslint/config
 (勾選以下選項)
