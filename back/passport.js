@@ -80,7 +80,7 @@ passport.use(
         // req.query = { aaa: 111, bbb: 222 }
         const url = req.baseUrl + req.path
         if (expired && url !== '/user/refresh' && url !== '/user/logout') {
-          throw new Error('TOKEN')
+          throw new Error('EXPIRED')
         }
 
         // 用解碼的資料查詢有沒有使用者
@@ -97,6 +97,8 @@ passport.use(
           return done(null, null, { message: 'userNotFound' })
         } else if (error.message === 'TOKEN') {
           return done(null, null, { message: 'userTokenInvalid' })
+        } else if (error.message === 'EXPIRED') {
+          return done(null, null, { message: 'userTokenExpired' })
         } else {
           return done(null, null, { message: 'serverError' })
         }

@@ -8,6 +8,7 @@ export default {
     cart: '購物車',
     orders: '訂單',
     admin: '管理',
+    logout: '登出',
   },
   register: {
     submit: '建立帳號',
@@ -16,6 +17,9 @@ export default {
   login: {
     submit: '登入',
     success: '登入成功',
+  },
+  logout: {
+    success: '登出成功',
   },
   user: {
     account: '帳號',
@@ -46,6 +50,7 @@ export default {
 
     userNotFound: '查無使用者',
     userTokenInvalid: '使用者驗證錯誤',
+    userTokenExpired: '登入過期',
 
     productNameRequired: '商品名稱必填',
     productPriceRequired: '商品價格必填',
