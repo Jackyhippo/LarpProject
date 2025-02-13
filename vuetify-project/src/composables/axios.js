@@ -26,12 +26,14 @@ const apiAuth = axios.create({
 // 3. 送出
 // 4. interceptors.response(成功處理, 失敗處理)
 // 5. await / .then().catch()
+// 自動加上 token
 apiAuth.interceptors.request.use((config) => {
   const user = useUserStore()
   config.headers.Authorization = 'Bearer ' + user.token
   return config
 })
 
+// 舊換新攔截器
 apiAuth.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -39,7 +41,7 @@ apiAuth.interceptors.response.use(
     // 沒收到回應時可能是網路問題
     // 有收到才需要處理
     if (error.response) {
-      // 是登入過期，而且請求不是舊換新
+      // 是登入過期，而且請求不是舊換新(防止死循環)
       if (error.response.data.message === 'userTokenExpired' && error.config.url !== '/user/refresh') {
         const user = useUserStore()
         try {

@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { StatusCodes } from 'http-status-codes'
 import jsonwebtoken from 'jsonwebtoken'
-import user from '../models/user.js'
+import UserRole from '../enums/UserRole'
 
 // 登入處理函式
 export const login = (req, res, next) => {
@@ -70,4 +70,16 @@ export const jwt = (req, res, next) => {
     // 繼續下一步
     next()
   })(req, res, next)
+}
+
+// 確認是否為管理員
+export const admin = (req, res, next) => {
+  if (req.user.role !== UserRole.ADMIN) {
+    res.status(StatusCodes.FORBIDDEN).json({
+      success: false,
+      message: 'userPermissionDenied',
+    })
+  } else {
+    next()
+  }
 }

@@ -49,6 +49,7 @@ export default {
     userCartQuantityTooSmall: '購物車數量不符',
 
     userNotFound: '查無使用者',
+    userPermissionDenied: '使用者權限不足',
     userTokenInvalid: '使用者驗證錯誤',
     userTokenExpired: '登入過期',
 

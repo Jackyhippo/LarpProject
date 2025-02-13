@@ -45,6 +45,9 @@ npm i -D eslint-config-prettier eslint-plugin-prettier
 處理跨網域的請求
 npm i cors
 
+處理form-data資料
+npm i multer cloudinary multer-storage-cloudinary
+(multer => 解析form-data資料的body)
 ---------------------------------------------------------------------
 前端部分
 npm create vuetify@latest

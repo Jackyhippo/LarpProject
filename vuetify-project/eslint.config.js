@@ -1,6 +1,6 @@
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
-import skipFormattingConfig from '@vue/eslint-config-prettier/skip-formatting' // 手動新增部分
+import skipFormatting from '@vue/eslint-config-prettier/skip-formatting' // 手動新增部分
 
 export default [
   {
@@ -15,7 +15,7 @@ export default [
 
   js.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
-  skipFormattingConfig, // 手動新增部分
+  skipFormatting, // 手動新增部分
 
   {
     rules: {
