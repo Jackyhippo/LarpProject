@@ -53,6 +53,7 @@ export default {
     userTokenInvalid: '使用者驗證錯誤',
     userTokenExpired: '登入過期',
 
+    productIdInvalid: '商品 ID 錯誤',
     productNameRequired: '商品名稱必填',
     productPriceRequired: '商品價格必填',
     productPriceTooSmall: '商品價格不符',
@@ -63,7 +64,9 @@ export default {
     productSellRequired: '商品上下架必填',
 
     requestFormatError: '請求格式錯誤',
+    productNotFound: '查無商品',
     severError: '伺服器錯誤',
     unknownError: '未知錯誤',
+    uploadFailed: '上傳失敗',
   },
 }

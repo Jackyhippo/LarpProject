@@ -1,7 +1,7 @@
 <template>
   <v-app-bar>
     <v-container class="d-flex align-center">
-      <v-btn to="/" :active="false">購物網站</v-btn>
+      <v-btn to="/" :active="false">本是同根生</v-btn>
       <v-spacer />
       <template v-for="nav of navs" :key="nav.to">
         <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">{{ nav.text }}</v-btn>

@@ -19,6 +19,10 @@ export const useUserStore = defineStore(
       return role.value === UserRole.ADMIN
     })
 
+    const avatar = computed(() => {
+      return `https://api.multiavatar.com/${account.value}.png`
+    })
+
     const login = (data) => {
       if (data.token) {
         token.value = data.token
@@ -42,6 +46,7 @@ export const useUserStore = defineStore(
       cart,
       isLoggedIn,
       isAdmin,
+      avatar,
       login,
       logout,
     }

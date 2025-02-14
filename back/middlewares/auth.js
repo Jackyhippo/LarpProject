@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { StatusCodes } from 'http-status-codes'
 import jsonwebtoken from 'jsonwebtoken'
-import UserRole from '../enums/UserRole'
+import UserRole from '../enums/UserRole.js'
 
 // 登入處理函式
 export const login = (req, res, next) => {

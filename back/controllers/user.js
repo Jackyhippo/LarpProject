@@ -11,7 +11,7 @@ export const create = async (req, res) => {
       message: '',
     })
   } catch (error) {
-    console.log(error)
+    console.log('controller user create', error)
     // 錯誤處理
     // 帳號重複註冊 => 回傳 409 Conflict 狀態碼
     if (error.name === 'MongoServerError' && error.code === 11000) {
@@ -58,7 +58,7 @@ export const login = async (req, res) => {
       },
     })
   } catch (error) {
-    console.log(error)
+    console.log('controller user login', error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'serverError',
@@ -93,7 +93,7 @@ export const refresh = async (req, res) => {
       result: token,
     })
   } catch (error) {
-    console.log(error)
+    console.log('controller user refresh', error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'serverError',
@@ -112,7 +112,7 @@ export const logout = async (req, res) => {
       message: '',
     })
   } catch (error) {
-    console.log(error)
+    console.log('controller user logout', error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'serverError',
