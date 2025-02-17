@@ -9,6 +9,9 @@ export default {
     orders: '訂單',
     admin: '管理',
     logout: '登出',
+    adminProducts: '劇本管理',
+    adminOrders: '訂單管理',
+    home: '首頁',
   },
   register: {
     submit: '建立帳號',
