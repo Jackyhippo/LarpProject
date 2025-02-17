@@ -30,6 +30,17 @@ export default {
     password: '密碼',
     passwordConfirm: '密碼確認',
   },
+  admin: {
+    index: '選擇管理項目',
+  },
+  productCategory: {
+    one: '硬核推理',
+    two: '情感沈浸',
+    three: '恐怖驚悚',
+    four: '機制陣營',
+    five: '歡樂搞笑',
+    six: '真相還原',
+  },
   api: {
     userAccountRequired: '使用者帳號必填',
     userAccountTooShort: '使用者帳號太短',

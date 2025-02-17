@@ -63,9 +63,7 @@ const schema = yup.object({
     // 最長長度
     .max(20, t('api.userAccountTooLong'))
     // 自訂驗證(自訂驗證名稱, 錯誤訊息, function)
-    .test('isAlphanumeric', t('api.userAccountInvalid'), (value) =>
-      validator.isAlphanumeric(value),
-    ),
+    .test('isAlphanumeric', t('api.userAccountInvalid'), (value) => validator.isAlphanumeric(value)),
   password: yup
     .string()
     .required(t('api.userPasswordRequired'))
@@ -106,3 +104,8 @@ const submit = handleSubmit(async (values) => {
   }
 })
 </script>
+
+<route lang="yaml">
+meta:
+  title: 'nav.login'
+</route>

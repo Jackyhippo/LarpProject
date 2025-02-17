@@ -15,11 +15,7 @@
             maxlength="20"
             counter
           />
-          <v-text-field
-            v-model="email.value.value"
-            :error-messages="email.errorMessage.value"
-            :label="$t('user.email')"
-          />
+          <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value" :label="$t('user.email')" />
           <v-text-field
             v-model="password.value.value"
             type="password"
@@ -75,9 +71,7 @@ const schema = yup.object({
     // 最長長度
     .max(20, t('api.userAccountTooLong'))
     // 自訂驗證(自訂驗證名稱, 錯誤訊息, function)
-    .test('isAlphanumeric', t('api.userAccountInvalid'), (value) =>
-      validator.isAlphanumeric(value),
-    ),
+    .test('isAlphanumeric', t('api.userAccountInvalid'), (value) => validator.isAlphanumeric(value)),
   email: yup
     .string()
     .required(t('api.userEmailRequired'))
@@ -131,3 +125,8 @@ const submit = handleSubmit(async (values) => {
   }
 })
 </script>
+
+<route lang="yaml">
+meta:
+  title: 'nav.register'
+</route>
