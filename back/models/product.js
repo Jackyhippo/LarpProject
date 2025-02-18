@@ -38,6 +38,30 @@ const schema = new Schema(
       type: Boolean,
       required: [true, 'productSellRequired'],
     },
+    difficulty: {
+      type: String,
+      required: [true, 'productDifficultyRequired'],
+      enum: {
+        values: ['新手入門', '新手進階', '中等難度', '中等偏難', '高手挑戰'],
+        message: 'productDifficultyInvalid',
+      },
+    },
+    players: {
+      type: Number,
+      required: [true, 'productPlayersRequired'],
+      enum: {
+        values: [3, 4, 5, 6, 7, 8, 9, 10],
+        message: 'productPlayersInvalid',
+      },
+    },
+    location: {
+      type: String,
+      required: [true, 'productLocationRequired'],
+      enum: {
+        values: ['台北市', '新北市', '桃園市', '新竹縣/市', '台中市', '台南市', '高雄市'],
+        message: 'productLocationInvalid',
+      },
+    },
   },
   {
     // 告訴 Mongoose 不要在每個文檔中自動創建 _v 字段（這是 Mongoose 用來追踪文檔版本的）。

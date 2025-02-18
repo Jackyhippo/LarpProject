@@ -38,7 +38,7 @@
             <v-tooltip location="bottom" style="max-width: 1200px">
               <template #activator="{ props }">
                 <span v-bind="props">
-                  {{ value.length > 20 ? value.substring(0, 20) + '...' : value }}
+                  {{ value.length > 10 ? value.substring(0, 10) + '...' : value }}
                 </span>
               </template>
               <div class="tooltip-content">{{ value }}</div>
@@ -73,6 +73,14 @@
             item-title="text"
             item-value="value"
           ></v-select>
+          <!-- <v-select
+            v-model="difficulty.value.value"
+            :error-messages="difficulty.errorMessage.value"
+            :items="difficultyOptions"
+            :label="$t('product.difficulty')"
+            item-title="text"
+            item-value="value"
+          ></v-select> -->
           <v-checkbox
             v-model="sell.value.value"
             :label="$t('product.onSell')"
@@ -125,6 +133,9 @@ const headers = computed(() => {
     { title: t('product.description'), key: 'description', sortable: true },
     { title: t('product.price'), key: 'price', sortable: true },
     { title: t('product.category'), key: 'category', sortable: true },
+    { title: t('product.difficulty'), key: 'difficulty', sortable: true },
+    { title: t('product.players'), key: 'players', sortable: true },
+    { title: t('product.location'), key: 'location', sortable: true },
     { title: t('product.sell'), key: 'sell', sortable: true },
     { title: t('product.createdAt'), key: 'createdAt', sortable: true },
     { title: t('product.updatedAt'), key: 'updatedAt', sortable: true },
@@ -149,7 +160,7 @@ const getProducts = async () => {
 getProducts()
 
 const dialog = ref({
-  open: false,
+  open: true,
   id: '',
 })
 const openDialog = (item) => {
@@ -194,6 +205,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     price: 0,
     description: '',
     category: '',
+    difficulty: '',
     sell: false,
   },
 })
@@ -209,6 +221,13 @@ const categoryOptions = computed(() => [
   { text: t('productCategory.MechanicalCamp'), value: 'MechanicalCamp' },
   { text: t('productCategory.HappyFunny'), value: 'HappyFunny' },
   { text: t('productCategory.TruthRestoration'), value: 'TruthRestoration' },
+])
+const difficultyOptions = computed(() => [
+  { text: t('productCategory.HardcoreReasoning'), value: '新手入門' },
+  { text: t('productCategory.DeepEmotional'), value: '新手進階' },
+  { text: t('productCategory.HorrorThriller'), value: '中等難度' },
+  { text: t('productCategory.MechanicalCamp'), value: '中等偏難' },
+  { text: t('productCategory.HappyFunny'), value: '高手挑戰' },
 ])
 
 const fileAgent = ref(null)

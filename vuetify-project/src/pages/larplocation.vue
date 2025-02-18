@@ -1,8 +1,8 @@
-<template>Index</template>
+<template>LarpLocation</template>
 
 <route lang="yaml">
 meta:
   login: false
   admin: false
-  title: 'nav.home'
+  title: 'nav.larplocation'
 </route>

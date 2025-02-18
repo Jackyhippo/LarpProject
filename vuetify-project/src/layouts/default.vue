@@ -2,6 +2,15 @@
   <v-app-bar>
     <v-container class="d-flex align-center">
       <v-btn to="/" :active="false">本是同根生</v-btn>
+      <v-btn prepend-icon="mdi-book-heart" to="/larp">
+        {{ $t('nav.larp') }}
+      </v-btn>
+      <v-btn prepend-icon="mdi-book-marker" to="/larplocation">
+        {{ $t('nav.larplocation') }}
+      </v-btn>
+      <v-btn prepend-icon="mdi-book-search" to="/larpword">
+        {{ $t('nav.larpword') }}
+      </v-btn>
       <v-spacer />
       <template v-for="nav of navs" :key="nav.to">
         <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">{{ nav.text }}</v-btn>
