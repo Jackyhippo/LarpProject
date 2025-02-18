@@ -65,6 +65,8 @@ npm i vee-validate validator yup
 npm i axios pinia-plugin-persistedstate
 npm i vuetify-use-dialog
 (vuetify-use-dialog => 讓通知視窗的code變簡單)
+npm i @boindil/vue-file-agent-next
+(vue-file-agent-next => 上傳圖片套件)
 
 
 

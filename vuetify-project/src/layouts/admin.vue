@@ -7,6 +7,9 @@
     <v-list>
       <v-list-item v-for="nav in navs" :key="nav.to" :prepend-icon="nav.icon" :title="nav.text" :to="nav.to"></v-list-item>
     </v-list>
+    <v-btn block size="large" variant="text" prepend-icon="mdi-theme-light-dark" @click="toggleTheme">
+      {{ $t('nav.switch') }}
+    </v-btn>
   </v-navigation-drawer>
   <v-main>
     <router-view></router-view>
@@ -17,9 +20,11 @@
 import { computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
+import { useTheme } from 'vuetify'
 
 const user = useUserStore()
 const { t } = useI18n()
+const theme = useTheme()
 
 const navs = computed(() => {
   return [
@@ -28,4 +33,8 @@ const navs = computed(() => {
     { to: '/', text: t('nav.home'), icon: 'mdi-home' },
   ]
 })
+
+function toggleTheme() {
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
 </script>

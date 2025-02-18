@@ -6,6 +6,9 @@
       <template v-for="nav of navs" :key="nav.to">
         <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">{{ nav.text }}</v-btn>
       </template>
+      <v-btn prepend-icon="mdi-theme-light-dark" @click="toggleTheme">
+        {{ $t('nav.switch') }}
+      </v-btn>
       <v-btn v-if="user.isLoggedIn" prepend-icon="mdi-account-arrow-right" @click="logout">
         {{ $t('nav.logout') }}
       </v-btn>
@@ -22,11 +25,13 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
+import { useTheme } from 'vuetify'
 
 const { t } = useI18n()
 const user = useUserStore()
 const { apiAuth } = useAxios()
 const createSnackbar = useSnackbar()
+const theme = useTheme()
 
 // 導覽列項目
 const navs = computed(() => {
@@ -53,5 +58,9 @@ const logout = async () => {
       color: 'green',
     },
   })
+}
+
+function toggleTheme() {
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 }
 </script>

@@ -21,6 +21,6 @@ export default createVuetify({
     adapter: createVueI18nAdapter({ i18n, useI18n }),
   },
   theme: {
-    defaultTheme: 'dark',
+    defaultTheme: 'light',
   },
 })

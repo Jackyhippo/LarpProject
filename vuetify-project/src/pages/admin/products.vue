@@ -10,14 +10,14 @@
           <!-- 只有一個的情況下，不用用[]包起來 -->
           <template #top>
             <v-toolbar>
-              <v-btn prepend-icon="mdi-book-edit">{{ $t('adminProduct.new') }}</v-btn>
+              <v-btn prepend-icon="mdi-book-edit" @click="openDialog(null)">{{ $t('adminProduct.new') }}</v-btn>
               <v-spacer></v-spacer>
               <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" variant="underlined"></v-text-field>
             </v-toolbar>
           </template>
           <!-- # 代表 v-slot 的簡寫(插槽) -->
           <template #[`item.image`]="{ value }">
-            <v-img :src="value" height="80"></v-img>
+            <v-img :src="value" height="70"></v-img>
           </template>
           <template #[`item.sell`]="{ value }">
             <v-icon v-if="value" icon="mdi-check"></v-icon>
@@ -31,12 +31,25 @@
           <template #[`item.category`]="{ value }">
             {{ $t('productCategory.' + value) }}
           </template>
+          <template #[`item.edit`]="{ item }">
+            <v-btn icon="mdi-pencil" variant="text" @click="openDialog(item)"></v-btn>
+          </template>
+          <template #[`item.description`]="{ value }">
+            <v-tooltip location="bottom" style="max-width: 1200px">
+              <template #activator="{ props }">
+                <span v-bind="props">
+                  {{ value.length > 20 ? value.substring(0, 20) + '...' : value }}
+                </span>
+              </template>
+              <div class="tooltip-content">{{ value }}</div>
+            </v-tooltip>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
   </v-container>
   <v-dialog v-model="dialog.open" persistent max-width="600">
-    <v-form>
+    <v-form :disabled="isSubmitting" @submit.prevent="submit">
       <v-card>
         <v-card-title>{{ $t(dialog.id ? 'adminProduct.edit' : 'adminProduct.new') }}</v-card-title>
         <v-card-text>
@@ -70,8 +83,21 @@
             :label="$t('product.description')"
             :error-messages="description.errorMessage.value"
           ></v-textarea>
+          <VueFileAgent
+            ref="fileAgent"
+            v-model="fileRecords"
+            v-model:raw-model-value="rawFileRecords"
+            accept="image/jpeg,image/png"
+            deletable
+            max-size="1MB"
+            :help-text="$t('fileAgent.helpText')"
+            :error-text="{ type: $t('fileAgent.errorType'), size: $t('fileAgent.errorSize') }"
+          ></VueFileAgent>
         </v-card-text>
-        <v-card-actions></v-card-actions>
+        <v-card-actions>
+          <v-btn @click="closeDialog">{{ $t('adminProduct.cancel') }}</v-btn>
+          <v-btn type="submit" :loading="isSubmitting">{{ $t('adminProduct.submit') }}</v-btn>
+        </v-card-actions>
       </v-card>
     </v-form>
   </v-dialog>
@@ -96,11 +122,13 @@ const headers = computed(() => {
     { title: 'ID', key: '_id', sortable: true },
     { title: t('product.image'), key: 'image', sortable: false },
     { title: t('product.name'), key: 'name', sortable: true },
+    { title: t('product.description'), key: 'description', sortable: true },
     { title: t('product.price'), key: 'price', sortable: true },
     { title: t('product.category'), key: 'category', sortable: true },
     { title: t('product.sell'), key: 'sell', sortable: true },
     { title: t('product.createdAt'), key: 'createdAt', sortable: true },
     { title: t('product.updatedAt'), key: 'updatedAt', sortable: true },
+    { title: t('adminProduct.edit'), key: 'edit', sortable: false },
   ]
 })
 
@@ -121,9 +149,26 @@ const getProducts = async () => {
 getProducts()
 
 const dialog = ref({
-  open: true,
+  open: false,
   id: '',
 })
+const openDialog = (item) => {
+  if (item) {
+    dialog.value.id = item._id
+    name.value.value = item.name
+    price.value.value = item.price
+    description.value.value = item.description
+    category.value.value = item.category
+    sell.value.value = item.sell
+  }
+  dialog.value.open = true
+}
+const closeDialog = () => {
+  resetForm()
+  dialog.value.id = ''
+  dialog.value.open = false
+  fileAgent.value.deleteFileRecord()
+}
 
 const schema = yup.object({
   name: yup.string().required(t('api.productNameRequired')),
@@ -142,7 +187,7 @@ const schema = yup.object({
     ),
   sell: yup.boolean().required(t('api.productSellRequired')),
 })
-const { handleSubmit, isSubmitting } = useForm({
+const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
     name: '',
@@ -165,7 +210,74 @@ const categoryOptions = computed(() => [
   { text: t('productCategory.HappyFunny'), value: 'HappyFunny' },
   { text: t('productCategory.TruthRestoration'), value: 'TruthRestoration' },
 ])
+
+const fileAgent = ref(null)
+const fileRecords = ref([])
+const rawFileRecords = ref([])
+
+const submit = handleSubmit(async (values) => {
+  if (fileRecords.value[0]?.error) return
+  if (dialog.value.id.length === 0 && fileRecords.value.length === 0) {
+    createSnackbar({
+      text: t('api.productImageRequired'),
+      snackbarProps: {
+        color: 'red',
+      },
+    })
+    return
+  }
+  try {
+    const fd = new FormData()
+    // fd.append(key, value)
+    fd.append('name', values.name)
+    fd.append('price', values.price)
+    fd.append('description', values.description)
+    fd.append('category', values.category)
+    fd.append('sell', values.sell)
+    if (fileRecords.value.length > 0) {
+      fd.append('image', fileRecords.value[0].file)
+    }
+    if (dialog.value.id.length > 0) {
+      await apiAuth.patch('/product/' + dialog.value.id, fd)
+    } else {
+      await apiAuth.post('/product', fd)
+      // const { data } = await apiAuth.post('/product', fd)
+      // console.log(data)
+    }
+    products.splice(0, products.length)
+    getProducts()
+    closeDialog()
+    createSnackbar({
+      text: t(dialog.value.id.length > 0 ? 'adminProduct.editSuccess' : 'adminProduct.newSuccess'),
+      snackbarProps: {
+        color: 'green',
+      },
+    })
+  } catch (error) {
+    console.log(error)
+    createSnackbar({
+      text: t('api.' + (error?.response?.data?.message || 'unknownError')),
+      snackbarProps: {
+        color: 'red',
+      },
+    })
+  }
+})
 </script>
+
+<style scoped>
+/* 限制 Tooltip 內容的寬度 */
+.tooltip-content {
+  font-size: 18px;
+  white-space: normal; /* 允許換行 */
+  word-break: break-word; /* 長單字可換行 */
+  padding: 8px;
+  background: rgba(9, 141, 91, 0.9) !important;
+  color: #c7ca04;
+  border-radius: 10px;
+  text-align: center;
+}
+</style>
 
 <route lang="yaml">
 meta:

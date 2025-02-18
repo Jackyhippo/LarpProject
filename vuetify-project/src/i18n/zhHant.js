@@ -12,6 +12,7 @@ export default {
     adminProducts: '劇本管理',
     adminOrders: '訂單管理',
     home: '首頁',
+    switch: '切換',
   },
   register: {
     submit: '建立帳號',
@@ -36,6 +37,10 @@ export default {
   adminProduct: {
     new: '新增劇本',
     edit: '編輯劇本',
+    cancel: '取消',
+    submit: '確認',
+    newSuccess: '劇本新增成功',
+    editSuccess: '劇本編輯成功',
   },
   product: {
     image: '圖片',
@@ -56,6 +61,11 @@ export default {
     MechanicalCamp: '機制陣營',
     HappyFunny: '歡樂搞笑',
     TruthRestoration: '真相還原',
+  },
+  fileAgent: {
+    helpText: '點擊或拖曳檔案至此',
+    errorType: '檔案類型錯誤',
+    errorSize: '檔案大小超過限制',
   },
   api: {
     userAccountRequired: '使用者帳號必填',
