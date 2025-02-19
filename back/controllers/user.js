@@ -123,23 +123,38 @@ export const logout = async (req, res) => {
 }
 
 // 取得購物車
-export const getCart = async (req, res) => {}
+export const getCart = async (req, res) => {
+  try {
+    const result = await User.findById(req.user._id, 'cart').populate('cart.product')
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: result.cart,
+    })
+  } catch (error) {
+    console.log('controller user getCart', error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: 'serverError',
+    })
+  }
+}
 
 // 更新購物車
 export const updateCart = async (req, res) => {
   try {
-    // 驗證購物車商品 ID 是否為有效的 MongoDB ObjectId
+    // 檢查傳入的商品 ID 格式
     if (!validator.isMongoId(req.body.product)) throw new Error('ID')
     // 檢查購物車有沒有商品
     const idx = req.user.cart.findIndex((item) => item.product.toString() === req.body.product)
     if (idx > -1) {
-      // 如果購物車有商品，修改數量
+      // 有商品，修改數量
       const quantity = req.user.cart[idx].quantity + parseInt(req.body.quantity)
       if (quantity > 0) {
-        // 數量大於 0，更新購物車商品數量
+        // 修改後大於 0，修改數量
         req.user.cart[idx].quantity = quantity
       } else {
-        // 數量小於等於 0，刪除購物車商品
+        // 修改後小於等於 0，刪除商品
         req.user.cart.splice(idx, 1)
       }
     } else {
@@ -171,6 +186,11 @@ export const updateCart = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: 'productNotOnSell',
+      })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: 'serverError',
       })
     }
   }
