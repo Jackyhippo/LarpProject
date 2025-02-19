@@ -1,6 +1,8 @@
 import User from '../models/user.js'
+import Product from '../models/product.js'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
+import validator from 'validator'
 
 // 註冊帳號
 export const create = async (req, res) => {
@@ -117,5 +119,59 @@ export const logout = async (req, res) => {
       success: false,
       message: 'serverError',
     })
+  }
+}
+
+// 取得購物車
+export const getCart = async (req, res) => {}
+
+// 更新購物車
+export const updateCart = async (req, res) => {
+  try {
+    // 驗證購物車商品 ID 是否為有效的 MongoDB ObjectId
+    if (!validator.isMongoId(req.body.product)) throw new Error('ID')
+    // 檢查購物車有沒有商品
+    const idx = req.user.cart.findIndex((item) => item.product.toString() === req.body.product)
+    if (idx > -1) {
+      // 如果購物車有商品，修改數量
+      const quantity = req.user.cart[idx].quantity + parseInt(req.body.quantity)
+      if (quantity > 0) {
+        // 數量大於 0，更新購物車商品數量
+        req.user.cart[idx].quantity = quantity
+      } else {
+        // 數量小於等於 0，刪除購物車商品
+        req.user.cart.splice(idx, 1)
+      }
+    } else {
+      // 沒有商品，檢查商品是否存在
+      const product = await Product.findById(req.body.product).orFail(new Error('NOT FOUND'))
+      // 檢查沒有上架，錯誤
+      if (!product.sell) throw new Error('SELL')
+      req.user.cart.push({ product: req.body.product, quantity: req.body.quantity })
+    }
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: req.user.cartQuantity,
+    })
+  } catch (error) {
+    console.log('controller user updateCart', error)
+    if (error.name === 'CastError' || error.message === 'ID') {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: 'productIdInvalid',
+      })
+    } else if (error.message === 'NOT FOUND') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'productNotFound',
+      })
+    } else if (error.message === 'SELL') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'productNotOnSell',
+      })
+    }
   }
 }

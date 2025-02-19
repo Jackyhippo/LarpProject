@@ -35,10 +35,10 @@
             <v-btn icon="mdi-pencil" variant="text" @click="openDialog(item)"></v-btn>
           </template>
           <template #[`item.description`]="{ value }">
-            <v-tooltip location="bottom" style="max-width: 1200px">
+            <v-tooltip location="bottom" style="max-width: 900px">
               <template #activator="{ props }">
                 <span v-bind="props">
-                  {{ value.length > 10 ? value.substring(0, 10) + '...' : value }}
+                  {{ value.length > 20 ? value.substring(0, 20) + '...' : value }}
                 </span>
               </template>
               <div class="tooltip-content">{{ value }}</div>
@@ -73,14 +73,30 @@
             item-title="text"
             item-value="value"
           ></v-select>
-          <!-- <v-select
+          <v-select
             v-model="difficulty.value.value"
             :error-messages="difficulty.errorMessage.value"
             :items="difficultyOptions"
             :label="$t('product.difficulty')"
             item-title="text"
             item-value="value"
-          ></v-select> -->
+          ></v-select>
+          <v-select
+            v-model="players.value.value"
+            :error-messages="players.errorMessage.value"
+            :items="playersOptions"
+            :label="$t('product.players')"
+            item-title="text"
+            item-value="value"
+          ></v-select>
+          <v-select
+            v-model="location.value.value"
+            :error-messages="location.errorMessage.value"
+            :items="locationOptions"
+            :label="$t('product.location')"
+            item-title="text"
+            item-value="value"
+          ></v-select>
           <v-checkbox
             v-model="sell.value.value"
             :label="$t('product.onSell')"
@@ -127,15 +143,15 @@ const products = reactive([])
 const search = ref('')
 const headers = computed(() => {
   return [
-    { title: 'ID', key: '_id', sortable: true },
-    { title: t('product.image'), key: 'image', sortable: false },
+    // { title: 'ID', key: '_id', sortable: true },
     { title: t('product.name'), key: 'name', sortable: true },
+    { title: t('product.image'), key: 'image', sortable: false },
     { title: t('product.description'), key: 'description', sortable: true },
     { title: t('product.price'), key: 'price', sortable: true },
     { title: t('product.category'), key: 'category', sortable: true },
-    { title: t('product.difficulty'), key: 'difficulty', sortable: true },
-    { title: t('product.players'), key: 'players', sortable: true },
-    { title: t('product.location'), key: 'location', sortable: true },
+    { title: t('product.difficulty'), key: 'difficulty', sortable: false },
+    { title: t('product.players'), key: 'players', sortable: false },
+    { title: t('product.location'), key: 'location', sortable: false },
     { title: t('product.sell'), key: 'sell', sortable: true },
     { title: t('product.createdAt'), key: 'createdAt', sortable: true },
     { title: t('product.updatedAt'), key: 'updatedAt', sortable: true },
@@ -160,7 +176,7 @@ const getProducts = async () => {
 getProducts()
 
 const dialog = ref({
-  open: true,
+  open: false,
   id: '',
 })
 const openDialog = (item) => {
@@ -171,6 +187,9 @@ const openDialog = (item) => {
     description.value.value = item.description
     category.value.value = item.category
     sell.value.value = item.sell
+    difficulty.value.value = item.difficulty
+    players.value.value = item.players
+    location.value.value = item.location
   }
   dialog.value.open = true
 }
@@ -197,6 +216,18 @@ const schema = yup.object({
       t('api.productCategoryInvalid'),
     ),
   sell: yup.boolean().required(t('api.productSellRequired')),
+  difficulty: yup
+    .string()
+    .required(t('api.productDifficultyRequired'))
+    .oneOf(['新手入門', '新手進階', '中等難度', '中等偏難', '高手挑戰'], t('api.productCategoryInvalid')),
+  players: yup
+    .number()
+    .required(t('api.productPlayersRequired'))
+    .oneOf([3, 4, 5, 6, 7, 8, 9, 10], t('api.productCategoryInvalid')),
+  location: yup
+    .string()
+    .required(t('api.productLocationRequired'))
+    .oneOf(['台北市', '新北市', '桃園市', '新竹縣/市', '台中市', '台南市', '高雄市'], t('api.productCategoryInvalid')),
 })
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
@@ -205,8 +236,10 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     price: 0,
     description: '',
     category: '',
-    difficulty: '',
     sell: false,
+    difficulty: '',
+    players: null,
+    location: '',
   },
 })
 const name = useField('name')
@@ -214,6 +247,9 @@ const price = useField('price')
 const description = useField('description')
 const category = useField('category')
 const sell = useField('sell')
+const difficulty = useField('difficulty')
+const players = useField('players')
+const location = useField('location')
 const categoryOptions = computed(() => [
   { text: t('productCategory.HardcoreReasoning'), value: 'HardcoreReasoning' },
   { text: t('productCategory.DeepEmotional'), value: 'DeepEmotional' },
@@ -223,11 +259,30 @@ const categoryOptions = computed(() => [
   { text: t('productCategory.TruthRestoration'), value: 'TruthRestoration' },
 ])
 const difficultyOptions = computed(() => [
-  { text: t('productCategory.HardcoreReasoning'), value: '新手入門' },
-  { text: t('productCategory.DeepEmotional'), value: '新手進階' },
-  { text: t('productCategory.HorrorThriller'), value: '中等難度' },
-  { text: t('productCategory.MechanicalCamp'), value: '中等偏難' },
-  { text: t('productCategory.HappyFunny'), value: '高手挑戰' },
+  { text: '新手入門', value: '新手入門' },
+  { text: '新手進階', value: '新手進階' },
+  { text: '中等難度', value: '中等難度' },
+  { text: '中等偏難', value: '中等偏難' },
+  { text: '高手挑戰', value: '高手挑戰' },
+])
+const playersOptions = computed(() => [
+  { text: 3, value: 3 },
+  { text: 4, value: 4 },
+  { text: 5, value: 5 },
+  { text: 6, value: 6 },
+  { text: 7, value: 7 },
+  { text: 8, value: 8 },
+  { text: 9, value: 9 },
+  { text: 10, value: 10 },
+])
+const locationOptions = computed(() => [
+  { text: '台北市', value: '台北市' },
+  { text: '新北市', value: '新北市' },
+  { text: '桃園市', value: '桃園市' },
+  { text: '新竹縣/市', value: '新竹縣/市' },
+  { text: '台中市', value: '台中市' },
+  { text: '台南市', value: '台南市' },
+  { text: '高雄市', value: '高雄市' },
 ])
 
 const fileAgent = ref(null)
@@ -253,6 +308,9 @@ const submit = handleSubmit(async (values) => {
     fd.append('description', values.description)
     fd.append('category', values.category)
     fd.append('sell', values.sell)
+    fd.append('difficulty', values.difficulty)
+    fd.append('players', values.players)
+    fd.append('location', values.location)
     if (fileRecords.value.length > 0) {
       fd.append('image', fileRecords.value[0].file)
     }
@@ -265,13 +323,13 @@ const submit = handleSubmit(async (values) => {
     }
     products.splice(0, products.length)
     getProducts()
-    closeDialog()
     createSnackbar({
       text: t(dialog.value.id.length > 0 ? 'adminProduct.editSuccess' : 'adminProduct.newSuccess'),
       snackbarProps: {
         color: 'green',
       },
     })
+    closeDialog()
   } catch (error) {
     console.log(error)
     createSnackbar({

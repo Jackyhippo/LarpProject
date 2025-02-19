@@ -46,7 +46,7 @@ export default {
     editSuccess: '劇本編輯成功',
   },
   product: {
-    image: '圖片',
+    image: '劇照',
     name: '劇本名稱',
     description: '說明',
     price: '價格',
@@ -116,7 +116,8 @@ export default {
     productLocationInvalid: '地點不符',
 
     requestFormatError: '請求格式錯誤',
-    productNotFound: '查無劇本',
+    productNotOnSell: '劇本未上架',
+    productNotFound: '查無此劇本',
     severError: '伺服器錯誤',
     unknownError: '未知錯誤',
     uploadFailed: '上傳失敗',
