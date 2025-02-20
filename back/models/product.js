@@ -47,10 +47,10 @@ const schema = new Schema(
       },
     },
     players: {
-      type: Number,
+      type: String,
       required: [true, 'productPlayersRequired'],
       enum: {
-        values: [3, 4, 5, 6, 7, 8, 9, 10],
+        values: ['3人', '4人', '5人', '6人', '7人', '8人', '9人', '10人以上'],
         message: 'productPlayersInvalid',
       },
     },
@@ -60,6 +60,14 @@ const schema = new Schema(
       enum: {
         values: ['台北市', '新北市', '桃園市', '新竹縣/市', '台中市', '台南市', '高雄市'],
         message: 'productLocationInvalid',
+      },
+    },
+    dressCode: {
+      type: String,
+      required: [true, 'productDressCodeRequired'],
+      enum: {
+        values: ['需換裝', '不需換裝'],
+        message: 'productDressCodeInvalid',
       },
     },
   },

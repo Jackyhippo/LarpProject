@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import UserRole from '@/enums/UserRole'
+import * as jdenticon from 'jdenticon'
 
 export const useUserStore = defineStore(
   'user',
@@ -19,8 +20,18 @@ export const useUserStore = defineStore(
       return role.value === UserRole.ADMIN
     })
 
+    // const avatar = computed(() => {
+    //   return `https://api.multiavatar.com/${account.value}.png`
+    // })
+    // 用 Jdenticon 生成圖像的 avatar
     const avatar = computed(() => {
-      return `https://api.multiavatar.com/${account.value}.png`
+      if (account.value) {
+        // 生成 SVG 並轉換為 Data URL
+        const svg = jdenticon.toSvg(account.value, 100)
+        const svgDataUrl = 'data:image/svg+xml;base64,' + btoa(svg)
+        return svgDataUrl
+      }
+      return ''
     })
 
     const login = (data) => {

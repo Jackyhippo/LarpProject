@@ -97,6 +97,14 @@
             item-title="text"
             item-value="value"
           ></v-select>
+          <v-select
+            v-model="dressCode.value.value"
+            :error-messages="dressCode.errorMessage.value"
+            :items="dressCodeOptions"
+            :label="$t('product.dressCode')"
+            item-title="text"
+            item-value="value"
+          ></v-select>
           <v-checkbox
             v-model="sell.value.value"
             :label="$t('product.onSell')"
@@ -190,6 +198,7 @@ const openDialog = (item) => {
     difficulty.value.value = item.difficulty
     players.value.value = item.players
     location.value.value = item.location
+    dressCode.value.value = item.dressCode
   }
   dialog.value.open = true
 }
@@ -219,15 +228,19 @@ const schema = yup.object({
   difficulty: yup
     .string()
     .required(t('api.productDifficultyRequired'))
-    .oneOf(['新手入門', '新手進階', '中等難度', '中等偏難', '高手挑戰'], t('api.productCategoryInvalid')),
+    .oneOf(['新手入門', '新手進階', '中等難度', '中等偏難', '高手挑戰'], t('api.productDifficultyInvalid')),
   players: yup
-    .number()
+    .string()
     .required(t('api.productPlayersRequired'))
-    .oneOf([3, 4, 5, 6, 7, 8, 9, 10], t('api.productCategoryInvalid')),
+    .oneOf(['3人', '4人', '5人', '6人', '7人', '8人', '9人', '10人以上'], t('api.productPlayersInvalid')),
   location: yup
     .string()
     .required(t('api.productLocationRequired'))
-    .oneOf(['台北市', '新北市', '桃園市', '新竹縣/市', '台中市', '台南市', '高雄市'], t('api.productCategoryInvalid')),
+    .oneOf(['台北市', '新北市', '桃園市', '新竹縣/市', '台中市', '台南市', '高雄市'], t('api.productLocationInvalid')),
+  dressCode: yup
+    .string()
+    .required(t('api.productDressCodeRequired'))
+    .oneOf(['需換裝', '不需換裝'], t('api.productDressCodeInvalid')),
 })
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
@@ -238,8 +251,9 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     category: '',
     sell: false,
     difficulty: '',
-    players: null,
+    players: '',
     location: '',
+    dressCode: '',
   },
 })
 const name = useField('name')
@@ -250,6 +264,7 @@ const sell = useField('sell')
 const difficulty = useField('difficulty')
 const players = useField('players')
 const location = useField('location')
+const dressCode = useField('dressCode')
 const categoryOptions = computed(() => [
   { text: t('productCategory.HardcoreReasoning'), value: 'HardcoreReasoning' },
   { text: t('productCategory.DeepEmotional'), value: 'DeepEmotional' },
@@ -266,14 +281,14 @@ const difficultyOptions = computed(() => [
   { text: '高手挑戰', value: '高手挑戰' },
 ])
 const playersOptions = computed(() => [
-  { text: 3, value: 3 },
-  { text: 4, value: 4 },
-  { text: 5, value: 5 },
-  { text: 6, value: 6 },
-  { text: 7, value: 7 },
-  { text: 8, value: 8 },
-  { text: 9, value: 9 },
-  { text: 10, value: 10 },
+  { text: '3人', value: '3人' },
+  { text: '4人', value: '4人' },
+  { text: '5人', value: '5人' },
+  { text: '6人', value: '6人' },
+  { text: '7人', value: '7人' },
+  { text: '8人', value: '8人' },
+  { text: '9人', value: '9人' },
+  { text: '10人以上', value: '10人以上' },
 ])
 const locationOptions = computed(() => [
   { text: '台北市', value: '台北市' },
@@ -283,6 +298,10 @@ const locationOptions = computed(() => [
   { text: '台中市', value: '台中市' },
   { text: '台南市', value: '台南市' },
   { text: '高雄市', value: '高雄市' },
+])
+const dressCodeOptions = computed(() => [
+  { text: '需換裝', value: '需換裝' },
+  { text: '不需換裝', value: '不需換裝' },
 ])
 
 const fileAgent = ref(null)
@@ -311,6 +330,7 @@ const submit = handleSubmit(async (values) => {
     fd.append('difficulty', values.difficulty)
     fd.append('players', values.players)
     fd.append('location', values.location)
+    fd.append('dressCode', values.dressCode)
     if (fileRecords.value.length > 0) {
       fd.append('image', fileRecords.value[0].file)
     }

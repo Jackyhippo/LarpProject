@@ -59,6 +59,8 @@ export default {
     updatedAt: '更新時間',
     onSell: '上架',
     notOnSell: '下架',
+    dressCode: '換裝需求',
+    reserve: '預約',
   },
   productCategory: {
     HardcoreReasoning: '硬核推理',
@@ -114,6 +116,8 @@ export default {
     productPlayersInvalid: '玩家人數不符',
     productLocationRequired: '地點必填',
     productLocationInvalid: '地點不符',
+    productDressCodeRequired: '換裝需求必填',
+    productDressCodeInvalid: '換裝需求不符',
 
     requestFormatError: '請求格式錯誤',
     productNotOnSell: '劇本未上架',
