@@ -28,6 +28,7 @@ const theme = useTheme()
 
 const navs = computed(() => {
   return [
+    { to: '/admin/profile', text: t('nav.adminProfile'), icon: 'mdi-account-circle' },
     { to: '/admin/products', text: t('nav.adminProducts'), icon: 'mdi-shopping' },
     { to: '/admin/orders', text: t('nav.adminOrders'), icon: 'mdi-format-list-bulleted' },
     { to: '/', text: t('nav.home'), icon: 'mdi-home' },

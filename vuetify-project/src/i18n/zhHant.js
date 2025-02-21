@@ -9,6 +9,7 @@ export default {
     orders: '訂單',
     admin: '管理',
     logout: '登出',
+    adminProfile: '個人資料',
     adminProducts: '劇本管理',
     adminOrders: '訂單管理',
     home: '首頁',

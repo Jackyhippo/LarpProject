@@ -30,7 +30,9 @@
             </v-col>
             <v-col cols="12" md="6" class="d-flex flex-column justify-center align-center">
               <v-form>
-                <v-btn type="submit" prepend-icon="mdi-calendar-range" size="x-large">{{ $t('product.reserve') }}</v-btn>
+                <v-btn type="submit" prepend-icon="mdi-calendar-range" size="x-large">
+                  {{ $t('product.reserve') }}
+                </v-btn>
               </v-form>
             </v-col>
           </v-row>
@@ -45,6 +47,15 @@
           <v-icon>mdi-map-marker</v-icon>
           <p>臺北市萬華區康定路 46 之 3 號</p>
         </div>
+      </v-col>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row>
+      <v-col cols="12" md="6"> <h1 class="text-center">預約須知</h1></v-col>
+      <v-col cols="12" md="6" class="d-flex flex-column align-center">
+        <h1 class="text-center">立即預約</h1>
+        <!-- 固定顯示的日期選擇器 -->
+        <v-date-picker v-model="selectedDate" width="100%" color="primary" style="min-height: 400px"></v-date-picker>
       </v-col>
     </v-row>
   </v-container>
@@ -74,6 +85,9 @@ const product = ref({
   location: '',
   dressCode: '',
 })
+
+// 選擇的預約日期
+const selectedDate = ref(null)
 
 const getProduct = async () => {
   try {
