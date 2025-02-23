@@ -2,7 +2,7 @@
 
 <route lang="yaml">
 meta:
-layout: admin
+  layout: admin
   login: true
   admin: true
   title: 'nav.adminProfile'

@@ -29,8 +29,15 @@
               </div>
             </v-col>
             <v-col cols="12" md="6" class="d-flex flex-column justify-center align-center">
-              <v-form>
-                <v-btn type="submit" prepend-icon="mdi-calendar-range" size="x-large">
+              <v-form :disabled="isSubmitting" @submit.prevent="submit">
+                <v-text-field
+                  v-model="selectedDate"
+                  label="預約日期"
+                  type="date"
+                  color="primary"
+                  style="width: 100%"
+                ></v-text-field>
+                <v-btn type="submit" prepend-icon="mdi-calendar-range" size="x-large" :loading="isSubmitting">
                   {{ $t('product.reserve') }}
                 </v-btn>
               </v-form>
@@ -55,7 +62,13 @@
       <v-col cols="12" md="6" class="d-flex flex-column align-center">
         <h1 class="text-center">立即預約</h1>
         <!-- 固定顯示的日期選擇器 -->
-        <v-date-picker v-model="selectedDate" width="100%" color="primary" style="min-height: 400px"></v-date-picker>
+        <v-date-picker
+          v-if="selectedDate !== null"
+          v-model="selectedDate"
+          width="100%"
+          color="primary"
+          style="min-height: 400px"
+        ></v-date-picker>
       </v-col>
     </v-row>
   </v-container>
@@ -65,12 +78,20 @@
 import { ref } from 'vue'
 import { useAxios } from '@/composables/axios'
 import { useRoute, useRouter } from 'vue-router'
+import { useForm, useField } from 'vee-validate'
+import * as yup from 'yup'
+import { useI18n } from 'vue-i18n'
+import { useUserStore } from '@/stores/user'
+import { useSnackbar } from 'vuetify-use-dialog'
 
-const { api } = useAxios()
+const { api, apiAuth } = useAxios()
 // 取得路由資訊
 const route = useRoute()
 // 取得路由做跳轉
 const router = useRouter()
+const { t } = useI18n()
+const user = useUserStore()
+const createSnackbar = useSnackbar()
 
 const product = ref({
   _id: '',
@@ -86,8 +107,43 @@ const product = ref({
   dressCode: '',
 })
 
+const schema = yup.object({
+  selectedDate: yup.date().required(),
+})
+const { handleSubmit, isSubmitting } = useForm({
+  validationSchema: schema,
+})
+const { value: selectedDate } = useField('selectedDate')
 // 選擇的預約日期
-const selectedDate = ref(null)
+// const selectedDate = ref(null)
+
+const submit = handleSubmit(async (values) => {
+  if (!user.isLoggedIn) {
+    router.push('/login')
+    return
+  }
+  try {
+    const { data } = await apiAuth.patch('/user/cart', {
+      product: product.value._id,
+      selectedDate: values.selectedDate,
+    })
+    user.cart = data.result
+    createSnackbar({
+      text: t('product.addCartSuccess'),
+      snackbarProps: {
+        color: 'green',
+      },
+    })
+  } catch (error) {
+    console.log(error)
+    createSnackbar({
+      text: t('api.' + (error?.response?.data?.message || 'unknownError')),
+      snackbarProps: {
+        color: 'red',
+      },
+    })
+  }
+})
 
 const getProduct = async () => {
   try {

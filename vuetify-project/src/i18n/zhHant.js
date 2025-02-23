@@ -62,6 +62,7 @@ export default {
     notOnSell: '下架',
     dressCode: '換裝需求',
     reserve: '預約',
+    addCartSuccess: '預約成功',
   },
   productCategory: {
     HardcoreReasoning: '硬核推理',
@@ -123,7 +124,7 @@ export default {
     requestFormatError: '請求格式錯誤',
     productNotOnSell: '劇本未上架',
     productNotFound: '查無此劇本',
-    severError: '伺服器錯誤',
+    serverError: '伺服器錯誤',
     unknownError: '未知錯誤',
     uploadFailed: '上傳失敗',
   },

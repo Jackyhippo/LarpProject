@@ -14,6 +14,10 @@ const cartSchema = new Schema({
     required: [true, 'userCartQuantityRequired'],
     min: [1, 'userCartQuantityTooSmall'],
   },
+  selectedDate: {
+    type: Date,
+    required: [true, 'userCartSelectedDateRequired'],
+  },
 })
 // schema = 藍圖
 const schema = new Schema(
