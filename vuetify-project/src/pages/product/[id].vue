@@ -30,13 +30,13 @@
             </v-col>
             <v-col cols="12" md="6" class="d-flex flex-column justify-center align-center">
               <v-form :disabled="isSubmitting" @submit.prevent="submit">
-                <v-text-field
+                <!-- <v-text-field
                   v-model="selectedDate"
                   label="預約日期"
                   type="date"
                   color="primary"
                   style="width: 100%"
-                ></v-text-field>
+                ></v-text-field> -->
                 <v-btn type="submit" prepend-icon="mdi-calendar-range" size="x-large" :loading="isSubmitting">
                   {{ $t('product.reserve') }}
                 </v-btn>
@@ -67,11 +67,14 @@
           v-model="selectedDate"
           width="100%"
           color="primary"
-          style="min-height: 400px"
+          style="min-height: 600px"
         ></v-date-picker>
       </v-col>
     </v-row>
   </v-container>
+  <v-overlay :model-value="!product.sell" class="align-center justify-center" opacity="0.7" persistent>
+    <h1 class="text-center" style="color: white">{{ $t('api.productNotOnSell') }}</h1>
+  </v-overlay>
 </template>
 
 <script setup>
@@ -106,6 +109,18 @@ const product = ref({
   location: '',
   dressCode: '',
 })
+
+const getProduct = async () => {
+  try {
+    const { data } = await api.get('/product/' + route.params.id)
+    product.value = data.result
+  } catch (error) {
+    console.log(error)
+    // 商品不存在時回首頁
+    router.push('/')
+  }
+}
+getProduct()
 
 const schema = yup.object({
   selectedDate: yup.date().required(),
@@ -144,19 +159,9 @@ const submit = handleSubmit(async (values) => {
     })
   }
 })
-
-const getProduct = async () => {
-  try {
-    const { data } = await api.get('/product/' + route.params.id)
-    product.value = data.result
-  } catch (error) {
-    console.log(error)
-  }
-}
-getProduct()
 </script>
 
-<style>
+<style scoped>
 h1 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -170,3 +175,8 @@ p {
   color: #18c5a0;
 }
 </style>
+
+<route lang="yaml">
+meta:
+  title: 'nav.product'
+</route>

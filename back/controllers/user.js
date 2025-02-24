@@ -56,7 +56,8 @@ export const login = async (req, res) => {
         token,
         account: req.user.account,
         role: req.user.role,
-        cart: req.user.cartQuantity,
+        cart: req.user.cart.length, // 修改為直接回傳購物車預約數量
+        // cart: req.user.cartQuantity,
       },
     })
   } catch (error) {
@@ -77,7 +78,8 @@ export const profile = async (req, res) => {
     result: {
       account: req.user.account,
       role: req.user.role,
-      cart: req.user.cartQuantity,
+      cart: req.user.cart.length, // 修改為直接回傳購物車預約數量
+      // cart: req.user.cartQuantity,
     },
   })
 }
@@ -145,30 +147,50 @@ export const updateCart = async (req, res) => {
   try {
     // 檢查傳入的商品 ID 格式
     if (!validator.isMongoId(req.body.product)) throw new Error('ID')
-    // 檢查購物車有沒有商品
-    const idx = req.user.cart.findIndex((item) => item.product.toString() === req.body.product)
-    if (idx > -1) {
-      // 有商品，修改數量
-      const quantity = req.user.cart[idx].quantity + parseInt(req.body.quantity)
-      if (quantity > 0) {
-        // 修改後大於 0，修改數量
-        req.user.cart[idx].quantity = quantity
-      } else {
-        // 修改後小於等於 0，刪除商品
-        req.user.cart.splice(idx, 1)
-      }
-    } else {
-      // 沒有商品，檢查商品是否存在
-      const product = await Product.findById(req.body.product).orFail(new Error('NOT FOUND'))
-      // 檢查沒有上架，錯誤
-      if (!product.sell) throw new Error('SELL')
-      req.user.cart.push({ product: req.body.product, quantity: req.body.quantity })
+    // 確保 selectedDate 是有效日期
+    if (!validator.isISO8601(req.body.selectedDate)) throw new Error('DATE_INVALID')
+    // 檢查是否為過去日期
+    const selectedDate = new Date(req.body.selectedDate)
+    if (selectedDate < new Date()) throw new Error('DATE_PAST')
+
+    // 將傳入的日期轉換為相同格式以便比較
+    const bookingDate = new Date(req.body.selectedDate).toISOString().split('T')[0]
+
+    // 檢查當前用戶是否已預約該日期
+    const existingCartItem = req.user.cart.findIndex((item) => {
+      const itemDate = new Date(item.selectedDate).toISOString().split('T')[0]
+      return item.product.toString() === req.body.product && itemDate === bookingDate
+    })
+    if (existingCartItem > -1) {
+      throw new Error('DATE_DUPLICATE')
     }
+
+    // 檢查該日期是否已被其他用戶預約
+    const existingBooking = await User.findOne({
+      _id: { $ne: req.user._id }, // 排除當前用戶
+      'cart.product': req.body.product,
+      'cart.selectedDate': req.body.selectedDate,
+    })
+    if (existingBooking) {
+      throw new Error('DATE_BOOKED')
+    }
+
+    // 沒有商品，檢查商品是否存在
+    const product = await Product.findById(req.body.product).orFail(new Error('NOT FOUND'))
+    // 檢查沒有上架，錯誤
+    if (!product.sell) throw new Error('SELL')
+
+    // 新增預約
+    req.user.cart.push({
+      product: req.body.product,
+      selectedDate: bookingDate,
+    })
+
     await req.user.save()
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',
-      result: req.user.cartQuantity,
+      result: req.user.cart,
     })
   } catch (error) {
     console.log('controller user updateCart', error)
@@ -186,6 +208,26 @@ export const updateCart = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: 'productNotOnSell',
+      })
+    } else if (error.message === 'DATE_INVALID') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'invalidDate',
+      })
+    } else if (error.message === 'DATE_PAST') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'pastDateNotAllowed',
+      })
+    } else if (error.message === 'DATE_DUPLICATE') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'dateAlreadyBooked',
+      })
+    } else if (error.message === 'DATE_BOOKED') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'dateBookedByOthers',
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

@@ -9,16 +9,28 @@ const cartSchema = new Schema({
     ref: 'products',
     required: [true, 'userCartProductRequired'],
   },
-  quantity: {
-    type: Number,
-    required: [true, 'userCartQuantityRequired'],
-    min: [1, 'userCartQuantityTooSmall'],
-  },
   selectedDate: {
     type: Date,
     required: [true, 'userCartSelectedDateRequired'],
+    validate: {
+      validator: function (value) {
+        // 確保日期不是過去的日期
+        return value >= new Date().setHours(0, 0, 0, 0)
+      },
+      message: 'userCartSelectedDateInvalid',
+    },
+    // 存入資料庫時轉換格式
+    set: function (value) {
+      if (value) {
+        return new Date(value).toISOString().split('T')[0]
+      }
+      return value
+    },
   },
 })
+// 加入複合索引確保同一個商品在同一天不會被重複預約
+cartSchema.index({ product: 1, selectedDate: 1 }, { unique: true })
+
 // schema = 藍圖
 const schema = new Schema(
   {
@@ -75,12 +87,16 @@ const schema = new Schema(
 // schema.virtual(欄位名稱).get(資料產生方式)
 // 建立不存在的動態虛擬欄位
 // 資料產生方式 function 內的 this 代表一筆資料
-schema.virtual('cartQuantity').get(function () {
-  const user = this
-  return user.cart.reduce((total, current) => {
-    return total + current.quantity
-  }, 0)
+// 改為預約數量
+schema.virtual('bookingCount').get(function () {
+  return this.cart.length
 })
+// schema.virtual('cartQuantity').get(function () {
+//   const user = this
+//   return user.cart.reduce((total, current) => {
+//     return total + current.quantity
+//   }, 0)
+// })
 
 // mongoose 驗證後，存入資料庫前執行動作 (Middleware)
 schema.pre('save', function (next) {

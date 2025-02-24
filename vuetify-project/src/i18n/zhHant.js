@@ -13,6 +13,7 @@ export default {
     adminProducts: '劇本管理',
     adminOrders: '訂單管理',
     home: '首頁',
+    product: '劇本',
     switch: '切換',
     larp: '熱門劇本',
     larplocation: '各地場館',
@@ -95,8 +96,8 @@ export default {
     userEmailInvalid: '使用者信箱格式不符',
 
     userCartProductRequired: '購物車劇本必填',
-    userCartQuantityRequired: '購物車數量必填',
-    userCartQuantityTooSmall: '購物車數量不符',
+    userCartSelectedDateRequired: '劇本預約日期必填',
+    userCartSelectedDateInvalid: '劇本預約日期格式錯誤',
 
     userNotFound: '查無使用者',
     userPermissionDenied: '使用者權限不足',
@@ -127,5 +128,9 @@ export default {
     serverError: '伺服器錯誤',
     unknownError: '未知錯誤',
     uploadFailed: '上傳失敗',
+    invalidDate: '日期格式錯誤',
+    pastDateNotAllowed: '以過期不能預約',
+    dateAlreadyBooked: '🥰已預約🥰',
+    dateBookedByOthers: '😭已被預約😭',
   },
 }
