@@ -5,7 +5,7 @@
         <h1 class="text-center">{{ $t('nav.cart') }}{{ cart.value }}</h1>
       </v-col>
       <v-divider></v-divider>
-      <v-col cols="6">
+      <v-col cols="12">
         <v-list bg-color="#098d5b" rounded="lg" lines="two">
           <template v-for="(item, i) in cart" :key="item._id">
             <v-list-item

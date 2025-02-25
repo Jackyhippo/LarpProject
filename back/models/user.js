@@ -27,6 +27,14 @@ const cartSchema = new Schema({
       return value
     },
   },
+  selectedTime: {
+    type: String,
+    required: [true, 'userCartSelectedTimeRequired'],
+    enum: {
+      values: ['早上：08:00 ~ 12:00', '下午：01:00 ~ 05:00', '晚上：06:00 ~ 10:00'],
+      message: 'userCartSelectedTimeInvalid',
+    },
+  },
 })
 // 加入複合索引確保同一個商品在同一天不會被重複預約
 cartSchema.index({ product: 1, selectedDate: 1 }, { unique: true })

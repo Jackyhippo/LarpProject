@@ -144,12 +144,17 @@ export const getCart = async (req, res) => {
 
 // 更新購物車
 export const updateCart = async (req, res) => {
-  console.log('controller user updateCart', req.body)
+  console.log('1111', req.body)
   try {
     // 檢查傳入的商品 ID 格式
     if (!validator.isMongoId(req.body.product)) throw new Error('ID')
     // 確保 selectedDate 是有效日期
     if (!validator.isISO8601(req.body.selectedDate)) throw new Error('DATE_INVALID')
+    // 檢查是否提供了 selectedTime 並且在允許的選項內
+    const allowedTimes = ['早上：08:00 ~ 12:00', '下午：01:00 ~ 05:00', '晚上：06:00 ~ 10:00']
+    if (!req.body.selectedTime || !allowedTimes.includes(req.body.selectedTime)) {
+      throw new Error('TIME_INVALID')
+    }
     // 檢查是否為過去日期
     const selectedDate = new Date(req.body.selectedDate)
     if (selectedDate < new Date()) throw new Error('DATE_PAST')
@@ -160,7 +165,11 @@ export const updateCart = async (req, res) => {
     // 檢查當前用戶是否已預約該日期
     const existingCartItem = req.user.cart.findIndex((item) => {
       const itemDate = new Date(item.selectedDate).toISOString().split('T')[0]
-      return item.product.toString() === req.body.product && itemDate === bookingDate
+      return (
+        item.product.toString() === req.body.product &&
+        itemDate === bookingDate &&
+        item.selectedTime === req.body.selectedTime
+      )
     })
     if (existingCartItem > -1) {
       throw new Error('DATE_DUPLICATE')
@@ -171,6 +180,7 @@ export const updateCart = async (req, res) => {
       _id: { $ne: req.user._id }, // 排除當前用戶
       'cart.product': req.body.product,
       'cart.selectedDate': req.body.selectedDate,
+      'cart.selectedTime': req.body.selectedTime,
     })
     if (existingBooking) {
       throw new Error('DATE_BOOKED')
@@ -185,6 +195,7 @@ export const updateCart = async (req, res) => {
     req.user.cart.push({
       product: req.body.product,
       selectedDate: bookingDate,
+      selectedTime: req.body.selectedTime,
     })
 
     await req.user.save()
@@ -219,6 +230,11 @@ export const updateCart = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: 'pastDateNotAllowed',
+      })
+    } else if (error.message === 'TIME_INVALID') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'invalidTime',
       })
     } else if (error.message === 'DATE_DUPLICATE') {
       res.status(StatusCodes.BAD_REQUEST).json({

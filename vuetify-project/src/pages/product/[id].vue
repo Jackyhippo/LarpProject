@@ -63,7 +63,7 @@
         <h1 class="text-center">立即預約</h1>
         <!-- 固定顯示的日期選擇器 -->
         <v-date-picker v-if="selectedDate !== null" v-model="selectedDate" width="100%" color="primary"></v-date-picker>
-        <v-select v-model="selectedTime" :items="timeSlots" label="選擇時間" color="primary" style="width: 50%"></v-select>
+        <v-select v-model="selectedTime" :items="timeSlots" label="選擇時間" color="primary" style="width: 70%"></v-select>
       </v-col>
     </v-row>
   </v-container>
@@ -118,8 +118,13 @@ const getProduct = async () => {
 }
 getProduct()
 
-// 新增時間選項
-const timeSlots = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']
+// 新增時間選項並加入對照表
+const timeSlots = ['早上：08:00 ~ 12:00', '下午：01:00 ~ 05:00', '晚上：06:00 ~ 10:00']
+const timeMap = {
+  '早上：08:00 ~ 12:00': { hour: 8, minute: 0 },
+  '下午：01:00 ~ 05:00': { hour: 13, minute: 0 },
+  '晚上：06:00 ~ 10:00': { hour: 18, minute: 0 },
+}
 
 const schema = yup.object({
   selectedDate: yup.date().required('請選擇日期'),
@@ -137,6 +142,8 @@ const { value: selectedTime } = useField('selectedTime')
 // const selectedDate = ref(null)
 
 const submit = handleSubmit(async (values) => {
+  console.log('selectedTime:', selectedTime.value) // 確保這裡有值
+  console.log('selectedDate:', selectedDate.value)
   console.log('預約資料:', values)
   if (!user.isLoggedIn) {
     router.push('/login')
@@ -149,9 +156,11 @@ const submit = handleSubmit(async (values) => {
     const reservationDate = new Date(selectedDate.value)
     if (isNaN(reservationDate.getTime())) throw new Error('invalidDate')
 
-    // 確保 `selectedTime` 有值
-    const timeParts = selectedTime.value ? selectedTime.value.split(':') : ['10', '00']
-    reservationDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]), 0, 0)
+    // 使用時間對照表設定時間
+    const timeSettings = timeMap[selectedTime.value]
+    if (!timeSettings) throw new Error('invalidTime')
+
+    reservationDate.setHours(timeSettings.hour, timeSettings.minute, 0, 0)
 
     // 檢查是否為過去的時間
     if (reservationDate < new Date()) throw new Error('cannotSelectPastTime')
