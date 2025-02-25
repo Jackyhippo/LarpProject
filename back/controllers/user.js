@@ -144,6 +144,7 @@ export const getCart = async (req, res) => {
 
 // 更新購物車
 export const updateCart = async (req, res) => {
+  console.log('controller user updateCart', req.body)
   try {
     // 檢查傳入的商品 ID 格式
     if (!validator.isMongoId(req.body.product)) throw new Error('ID')

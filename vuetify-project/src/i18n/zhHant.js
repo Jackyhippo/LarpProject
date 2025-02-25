@@ -36,6 +36,10 @@ export default {
     password: '密碼',
     passwordConfirm: '密碼確認',
   },
+  cart: {
+    checkout: '結帳',
+    cancel: '取消',
+  },
   admin: {
     index: '選擇管理項目',
   },

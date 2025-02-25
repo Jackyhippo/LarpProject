@@ -62,13 +62,8 @@
       <v-col cols="12" md="6" class="d-flex flex-column align-center">
         <h1 class="text-center">立即預約</h1>
         <!-- 固定顯示的日期選擇器 -->
-        <v-date-picker
-          v-if="selectedDate !== null"
-          v-model="selectedDate"
-          width="100%"
-          color="primary"
-          style="min-height: 600px"
-        ></v-date-picker>
+        <v-date-picker v-if="selectedDate !== null" v-model="selectedDate" width="100%" color="primary"></v-date-picker>
+        <v-select v-model="selectedTime" :items="timeSlots" label="選擇時間" color="primary" style="width: 50%"></v-select>
       </v-col>
     </v-row>
   </v-container>
@@ -114,6 +109,7 @@ const getProduct = async () => {
   try {
     const { data } = await api.get('/product/' + route.params.id)
     product.value = data.result
+    document.title = product.value.name + ' | 本是同根生'
   } catch (error) {
     console.log(error)
     // 商品不存在時回首頁
@@ -122,25 +118,49 @@ const getProduct = async () => {
 }
 getProduct()
 
+// 新增時間選項
+const timeSlots = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']
+
 const schema = yup.object({
-  selectedDate: yup.date().required(),
+  selectedDate: yup.date().required('請選擇日期'),
+  selectedTime: yup.string().required('請選擇時間'),
 })
 const { handleSubmit, isSubmitting } = useForm({
   validationSchema: schema,
+  initialValues: {
+    selectedTime: timeSlots[0], // 預設第一個時段
+  },
 })
 const { value: selectedDate } = useField('selectedDate')
+const { value: selectedTime } = useField('selectedTime')
 // 選擇的預約日期
 // const selectedDate = ref(null)
 
 const submit = handleSubmit(async (values) => {
+  console.log('預約資料:', values)
   if (!user.isLoggedIn) {
     router.push('/login')
     return
   }
   try {
+    if (!selectedDate.value) throw new Error('invalidDate')
+
+    // 轉換成 Date 物件
+    const reservationDate = new Date(selectedDate.value)
+    if (isNaN(reservationDate.getTime())) throw new Error('invalidDate')
+
+    // 確保 `selectedTime` 有值
+    const timeParts = selectedTime.value ? selectedTime.value.split(':') : ['10', '00']
+    reservationDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]), 0, 0)
+
+    // 檢查是否為過去的時間
+    if (reservationDate < new Date()) throw new Error('cannotSelectPastTime')
+
     const { data } = await apiAuth.patch('/user/cart', {
       product: product.value._id,
-      selectedDate: values.selectedDate,
+      selectedDate: reservationDate.toISOString(),
+      selectedTime: selectedTime.value,
+      // selectedDate: values.selectedDate,
     })
     user.cart = data.result
     createSnackbar({

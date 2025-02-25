@@ -13,7 +13,10 @@
       </v-btn>
       <v-spacer />
       <template v-for="nav of navs" :key="nav.to">
-        <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">{{ nav.text }}</v-btn>
+        <v-btn v-if="nav.show" :to="nav.to" :prepend-icon="nav.icon">
+          {{ nav.text }}
+          <v-badge v-if="nav.to === '/cart'" :content="user.cart" floating color="red"></v-badge>
+        </v-btn>
       </template>
       <v-btn prepend-icon="mdi-theme-light-dark" @click="toggleTheme">
         {{ $t('nav.switch') }}
