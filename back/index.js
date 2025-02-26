@@ -12,6 +12,8 @@ mongoose
   .connect(process.env.DB_URL)
   .then(() => {
     console.log('資料庫連線成功')
+    // 開啟時，Mongoose 會自動清理查詢過濾器中的 非預期的 MongoDB 操作符，防止 NoSQL 注入攻擊。
+    mongoose.set('sanitizeFilter', true)
   })
   .catch((error) => {
     console.log('資料庫連失敗')

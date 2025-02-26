@@ -40,6 +40,12 @@ export default {
     checkout: '結帳',
     remove: '移除',
   },
+  order: {
+    createdAt: '訂單時間',
+    cart: '商品',
+    price: '訂單金額',
+    account: '帳號',
+  },
   admin: {
     index: '選擇管理項目',
   },
