@@ -185,7 +185,6 @@ export const updateCart = async (req, res) => {
     if (existingBooking) {
       throw new Error('DATE_BOOKED')
     }
-
     // 沒有商品，檢查商品是否存在
     const product = await Product.findById(req.body.product).orFail(new Error('NOT FOUND'))
     // 檢查沒有上架，錯誤
@@ -197,6 +196,7 @@ export const updateCart = async (req, res) => {
       selectedDate: bookingDate,
       selectedTime: req.body.selectedTime,
     })
+    console.log('2222')
 
     await req.user.save()
     res.status(StatusCodes.OK).json({
@@ -245,6 +245,34 @@ export const updateCart = async (req, res) => {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: 'dateBookedByOthers',
+      })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: 'serverError',
+      })
+    }
+  }
+}
+
+export const deleteCart = async (req, res) => {
+  try {
+    console.log('req.body.id', req.body.id)
+    const idx = req.user.cart.findIndex((item) => item._id.toString() === req.body.id)
+    if (idx === -1) throw new Error('NOT FOUND')
+    req.user.cart.splice(idx, 1)
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: req.user.cart,
+    })
+  } catch (error) {
+    console.log('controller user deleteCart', error)
+    if (error.message === 'NOT FOUND') {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: 'cartItemNotFound',
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

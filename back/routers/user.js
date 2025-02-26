@@ -11,5 +11,6 @@ router.patch('/refresh', auth.jwt, user.refresh)
 router.delete('/logout', auth.jwt, user.logout)
 router.get('/cart', auth.jwt, user.getCart)
 router.patch('/cart', auth.jwt, user.updateCart)
+router.delete('/cart', auth.jwt, user.deleteCart)
 
 export default router

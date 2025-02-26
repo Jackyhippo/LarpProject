@@ -62,7 +62,16 @@
       <v-col cols="12" md="6" class="d-flex flex-column align-center">
         <h1 class="text-center">立即預約</h1>
         <!-- 固定顯示的日期選擇器 -->
-        <v-date-picker v-if="selectedDate !== null" v-model="selectedDate" width="100%" color="primary"></v-date-picker>
+        <v-date-picker
+          v-if="selectedDate !== null"
+          v-model="selectedDate"
+          width="100%"
+          color="primary"
+          show-adjacent-months
+          title="請選擇日期"
+          header="請選擇日期"
+          :min="today"
+        ></v-date-picker>
         <v-select v-model="selectedTime" :items="timeSlots" label="選擇時間" color="primary" style="width: 70%"></v-select>
       </v-col>
     </v-row>
@@ -90,6 +99,9 @@ const router = useRouter()
 const { t } = useI18n()
 const user = useUserStore()
 const createSnackbar = useSnackbar()
+// （ISO 8601格式）
+const today = new Date()
+// const today = new Date().toISOString().split('T')[0]
 
 const product = ref({
   _id: '',
@@ -98,7 +110,7 @@ const product = ref({
   description: '',
   image: '',
   sell: true,
-  category: '',
+  category: 'HardcoreReasoning',
   difficulty: '',
   players: '',
   location: '',
@@ -142,26 +154,22 @@ const { value: selectedTime } = useField('selectedTime')
 // const selectedDate = ref(null)
 
 const submit = handleSubmit(async (values) => {
-  console.log('selectedTime:', selectedTime.value) // 確保這裡有值
-  console.log('selectedDate:', selectedDate.value)
   console.log('預約資料:', values)
+  console.log('selectedDate:', selectedDate.value)
+  console.log('selectedTime:', selectedTime.value)
   if (!user.isLoggedIn) {
     router.push('/login')
     return
   }
   try {
     if (!selectedDate.value) throw new Error('invalidDate')
-
     // 轉換成 Date 物件
     const reservationDate = new Date(selectedDate.value)
     if (isNaN(reservationDate.getTime())) throw new Error('invalidDate')
-
     // 使用時間對照表設定時間
     const timeSettings = timeMap[selectedTime.value]
     if (!timeSettings) throw new Error('invalidTime')
-
     reservationDate.setHours(timeSettings.hour, timeSettings.minute, 0, 0)
-
     // 檢查是否為過去的時間
     if (reservationDate < new Date()) throw new Error('cannotSelectPastTime')
 

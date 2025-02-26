@@ -36,8 +36,6 @@ const cartSchema = new Schema({
     },
   },
 })
-// 加入複合索引確保同一個商品在同一天不會被重複預約
-cartSchema.index({ product: 1, selectedDate: 1 }, { unique: true })
 
 // schema = 藍圖
 const schema = new Schema(

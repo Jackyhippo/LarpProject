@@ -38,7 +38,7 @@ export default {
   },
   cart: {
     checkout: '結帳',
-    cancel: '取消',
+    remove: '移除',
   },
   admin: {
     index: '選擇管理項目',
@@ -125,6 +125,15 @@ export default {
     productLocationInvalid: '地點不符',
     productDressCodeRequired: '換裝需求必填',
     productDressCodeInvalid: '換裝需求不符',
+
+    orderCartProductRequired: '訂單劇本必填',
+    orderCartSelectedDateRequired: '劇本預約日期必填',
+    orderCartSelectedDateInvalid: '劇本預約日期格式錯誤',
+    orderCartSelectedTimeRequired: '劇本預約時間必填',
+    orderCartSelectedTimeInvalid: '劇本預約時間格式錯誤',
+    orderUserRequired: '訂單使用者必填',
+    orderCartRequired: '訂單購物車必填',
+    orderCartEmpty: '訂單購物車為空',
 
     requestFormatError: '請求格式錯誤',
     productNotOnSell: '劇本未上架',

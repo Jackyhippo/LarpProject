@@ -37,12 +37,14 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
+import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
 
 const { t } = useI18n()
 const user = useUserStore()
 const { apiAuth } = useAxios()
 const createSnackbar = useSnackbar()
+const router = useRouter()
 const theme = useTheme()
 
 // 導覽列項目
@@ -70,6 +72,7 @@ const logout = async () => {
       color: 'green',
     },
   })
+  router.push('/')
 }
 
 // 切換主題函式
