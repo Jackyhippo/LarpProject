@@ -3,6 +3,7 @@ import Product from '../models/product.js'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
 import validator from 'validator'
+import mongoose from 'mongoose'
 
 // 註冊帳號
 export const create = async (req, res) => {
@@ -177,7 +178,8 @@ export const updateCart = async (req, res) => {
 
     // 檢查該日期是否已被其他用戶預約
     const existingBooking = await User.findOne({
-      _id: { $ne: req.user._id }, // 排除當前用戶
+      _id: { $ne: req.user._id },
+      // 排除當前用戶
       'cart.product': req.body.product,
       'cart.selectedDate': req.body.selectedDate,
       'cart.selectedTime': req.body.selectedTime,

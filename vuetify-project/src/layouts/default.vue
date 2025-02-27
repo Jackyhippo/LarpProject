@@ -12,9 +12,9 @@
         {{ $t('nav.larpword') }}
       </v-btn>
       <v-spacer />
-      <v-menu open-on-hover class="text-center" width="200px">
+      <v-menu class="text-center" width="200px">
         <template #activator="{ props }">
-          <v-btn v-bind="props" prepend-icon="mdi-menu"> 選單 </v-btn>
+          <v-btn v-bind="props" icon="mdi-menu"> </v-btn>
         </template>
         <v-list>
           <template v-for="nav of navs">
@@ -29,6 +29,7 @@
             </template>
             {{ $t('nav.logout') }}
           </v-list-item>
+          <v-divider></v-divider>
           <v-list-item @click="toggleTheme">
             <template #prepend>
               <v-icon>mdi-theme-light-dark</v-icon>
@@ -36,14 +37,11 @@
             {{ $t('nav.switch') }}
           </v-list-item>
           <v-list-item>
-            <template #prepend>
-              <v-icon icon="mdi-translate"></v-icon>
-            </template>
             <v-menu location="end" open-on-hover>
               <template #activator="{ props }">
-                <v-btn v-bind="props" variant="text" block class="justify-center">
+                <v-list-item v-bind="props" prepend-icon="mdi-translate">
                   {{ '翻譯' }}
-                </v-btn>
+                </v-list-item>
               </template>
               <v-list>
                 <v-list-item v-for="lang in langs" :key="lang.value" @click="$i18n.locale = lang.value">
@@ -81,9 +79,10 @@
       </v-menu> -->
     </v-container>
   </v-app-bar>
-  <v-main>
+  <v-main class="content-area">
     <router-view></router-view>
   </v-main>
+  <Footer />
 </template>
 
 <script setup>
@@ -94,6 +93,7 @@ import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
+import Footer from './footer.vue'
 
 const { t } = useI18n()
 const user = useUserStore()
@@ -140,3 +140,10 @@ function toggleTheme() {
   theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 }
 </script>
+
+<style scoped>
+/* 確保 v-main 至少撐滿畫面高度，這樣 Footer 內容少時會貼底 */
+.content-area {
+  min-height: calc(100vh - 64px); /* 64px 是 Navbar 高度，可根據實際需求調整 */
+}
+</style>
