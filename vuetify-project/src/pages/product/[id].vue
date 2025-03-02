@@ -13,7 +13,7 @@
             <v-col cols="12" md="6">
               <div class="d-flex">
                 <v-icon>mdi-bookshelf</v-icon>
-                <p>{{ $t('productCategory.' + product.category) }}</p>
+                <p>{{ product.category }}</p>
               </div>
               <div class="d-flex">
                 <v-icon>mdi-account-group</v-icon>
@@ -110,7 +110,7 @@ const product = ref({
   description: '',
   image: '',
   sell: true,
-  category: 'HardcoreReasoning',
+  category: '',
   difficulty: '',
   players: '',
   location: '',

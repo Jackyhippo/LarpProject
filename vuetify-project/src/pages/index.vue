@@ -37,7 +37,7 @@
             <img src="/public/選戰2024.jpg" alt="" />
           </swiper-slide>
           <swiper-slide>
-            <img src="/public/壽宴 1987.jpg" alt="" />
+            <img src="/public/捉鬼.png" alt="" />
           </swiper-slide>
           <swiper-slide>
             <img src="/public/把愛吐進垃圾桶裡.png" alt="" />

@@ -29,7 +29,7 @@
             {{ new Date(value).toLocaleDateString() }}
           </template>
           <template #[`item.category`]="{ value }">
-            {{ $t('productCategory.' + value) }}
+            {{ value }}
           </template>
           <template #[`item.edit`]="{ item }">
             <v-btn icon="mdi-pencil" variant="text" @click="openDialog(item)"></v-btn>
@@ -220,10 +220,7 @@ const schema = yup.object({
   category: yup
     .string()
     .required(t('api.productCategoryRequired'))
-    .oneOf(
-      ['HardcoreReasoning', 'DeepEmotional', 'HorrorThriller', 'MechanicalCamp', 'HappyFunny', 'TruthRestoration'],
-      t('api.productCategoryInvalid'),
-    ),
+    .oneOf(['硬核推理', '情感沈浸', '恐怖驚悚', '機制陣營', '歡樂搞笑', '真相還原'], t('api.productCategoryInvalid')),
   sell: yup.boolean().required(t('api.productSellRequired')),
   difficulty: yup
     .string()
@@ -266,12 +263,12 @@ const players = useField('players')
 const location = useField('location')
 const dressCode = useField('dressCode')
 const categoryOptions = computed(() => [
-  { text: t('productCategory.HardcoreReasoning'), value: 'HardcoreReasoning' },
-  { text: t('productCategory.DeepEmotional'), value: 'DeepEmotional' },
-  { text: t('productCategory.HorrorThriller'), value: 'HorrorThriller' },
-  { text: t('productCategory.MechanicalCamp'), value: 'MechanicalCamp' },
-  { text: t('productCategory.HappyFunny'), value: 'HappyFunny' },
-  { text: t('productCategory.TruthRestoration'), value: 'TruthRestoration' },
+  { text: '硬核推理', value: '硬核推理' },
+  { text: '情感沈浸', value: '情感沈浸' },
+  { text: '恐怖驚悚', value: '恐怖驚悚' },
+  { text: '機制陣營', value: '機制陣營' },
+  { text: '歡樂搞笑', value: '歡樂搞笑' },
+  { text: '真相還原', value: '真相還原' },
 ])
 const difficultyOptions = computed(() => [
   { text: '新手入門', value: '新手入門' },

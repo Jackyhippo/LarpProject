@@ -35,6 +35,7 @@ export default {
     email: '信箱',
     password: '密碼',
     passwordConfirm: '密碼確認',
+    isAdmin: '是否成為管理員',
   },
   cart: {
     checkout: '結帳',
@@ -74,14 +75,6 @@ export default {
     dressCode: '換裝需求',
     reserve: '預約',
     addCartSuccess: '預約成功',
-  },
-  productCategory: {
-    HardcoreReasoning: '硬核推理',
-    DeepEmotional: '情感沈浸',
-    HorrorThriller: '恐怖驚悚',
-    MechanicalCamp: '機制陣營',
-    HappyFunny: '歡樂搞笑',
-    TruthRestoration: '真相還原',
   },
   fileAgent: {
     helpText: '點擊或拖曳檔案至此',

@@ -12,15 +12,20 @@
         {{ $t('nav.larpword') }}
       </v-btn>
       <v-spacer />
-      <v-menu class="text-center" width="200px">
+      <v-menu class="text-center" width="200px" open-on-hover>
         <template #activator="{ props }">
-          <v-btn v-bind="props" icon="mdi-menu"> </v-btn>
+          <v-btn v-bind="props" icon>
+            <v-avatar size="40">
+              <v-img v-if="user.avatar" :src="user.avatar" alt="User Avatar"></v-img>
+              <v-icon v-else size="40">mdi-account</v-icon>
+            </v-avatar>
+          </v-btn>
         </template>
         <v-list>
           <template v-for="nav of navs">
             <v-list-item v-if="nav.show" :key="nav.to" :to="nav.to" :prepend-icon="nav.icon">
               {{ nav.text }}
-              <v-badge v-if="nav.to === '/cart'" :content="user.cart" floating color="red"></v-badge>
+              <v-badge v-if="nav.to === '/cart'" :content="user.cart?.length || 0" floating color="red"></v-badge>
             </v-list-item>
           </template>
           <v-list-item v-if="user.isLoggedIn" @click="logout">

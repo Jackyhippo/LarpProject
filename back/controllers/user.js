@@ -178,8 +178,7 @@ export const updateCart = async (req, res) => {
 
     // 檢查該日期是否已被其他用戶預約
     const existingBooking = await User.findOne({
-      _id: { $ne: req.user._id },
-      // 排除當前用戶
+      _id: mongoose.trusted({ $ne: req.user._id }), // 排除當前用戶
       'cart.product': req.body.product,
       'cart.selectedDate': req.body.selectedDate,
       'cart.selectedTime': req.body.selectedTime,

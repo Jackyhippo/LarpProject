@@ -23,14 +23,7 @@ const schema = new Schema(
       type: String,
       required: [true, 'productCategoryRequired'],
       enum: {
-        values: [
-          'HardcoreReasoning',
-          'DeepEmotional',
-          'HorrorThriller',
-          'MechanicalCamp',
-          'HappyFunny',
-          'TruthRestoration',
-        ],
+        values: ['硬核推理', '情感沈浸', '恐怖驚悚', '機制陣營', '歡樂搞笑', '真相還原'],
         message: 'productCategoryInvalid',
       },
     },

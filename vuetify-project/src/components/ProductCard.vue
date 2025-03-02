@@ -6,7 +6,7 @@
     </v-card-title>
     <v-card-subtitle>
       <v-icon>mdi-bookshelf</v-icon>
-      {{ $t('productCategory.' + category) }}
+      {{ category }}
     </v-card-subtitle>
     <v-card-subtitle>
       <v-icon>mdi-currency-usd</v-icon>

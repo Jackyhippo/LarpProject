@@ -31,6 +31,7 @@ export const create = async (req, res) => {
   }
 }
 
+// 取得所有已上架的商品 (sell: true)。
 export const get = async (req, res) => {
   try {
     const result = await Product.find({ sell: true })
@@ -48,6 +49,7 @@ export const get = async (req, res) => {
   }
 }
 
+// 取得所有商品 (包含未上架的)。
 export const getAll = async (req, res) => {
   try {
     const result = await Product.find()
@@ -65,6 +67,7 @@ export const getAll = async (req, res) => {
   }
 }
 
+// 透過商品 ID 查詢
 export const getId = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID')
@@ -95,6 +98,7 @@ export const getId = async (req, res) => {
   }
 }
 
+// 編輯商品
 export const edit = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID')

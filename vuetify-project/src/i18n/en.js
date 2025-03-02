@@ -75,14 +75,6 @@ export default {
     reserve: 'reservation',
     addCartSuccess: 'Reservation successful',
   },
-  productCategory: {
-    HardcoreReasoning: 'hardcore reasoning',
-    DeepEmotional: 'Emotional immersion',
-    HorrorThriller: 'Horror Thriller',
-    MechanicalCamp: 'Mechanical Camp',
-    HappyFunny: 'Happy Funny',
-    TruthRestoration: 'Truth Restoration',
-  },
   fileAgent: {
     helpText: 'Click or drag the file here',
     errorType: 'File type error',

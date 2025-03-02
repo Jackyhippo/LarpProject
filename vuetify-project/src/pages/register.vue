@@ -5,7 +5,8 @@
         <h1 class="text-center">{{ $t('nav.register') }}</h1>
       </v-col>
       <v-divider></v-divider>
-      <v-col cols="12" sm="4">
+      <!-- 一般會員註冊 -->
+      <v-col cols="6" sm="4">
         <v-form :disabled="isSubmitting" @submit.prevent="submit">
           <v-text-field
             v-model="account.value.value"
@@ -41,6 +42,45 @@
           </div>
         </v-form>
       </v-col>
+      <!-- 管理員註冊 -->
+      <v-col cols="6" sm="4">
+        <v-form :disabled="isSubmitting" @submit.prevent="submit">
+          <v-text-field
+            v-model="account.value.value"
+            :error-messages="account.errorMessage.value"
+            :label="$t('user.account')"
+            minlength="4"
+            maxlength="20"
+            counter
+          />
+          <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value" :label="$t('user.email')" />
+          <v-text-field
+            v-model="password.value.value"
+            type="password"
+            :error-messages="password.errorMessage.value"
+            :label="$t('user.password')"
+            minlength="4"
+            maxlength="20"
+            counter
+          />
+          <v-text-field
+            v-model="passwordConfirm.value.value"
+            type="password"
+            :error-messages="passwordConfirm.errorMessage.value"
+            :label="$t('user.passwordConfirm')"
+            minlength="4"
+            maxlength="20"
+            counter
+          />
+          <!-- 管理員註冊選擇框 -->
+          <v-checkbox v-model="isAdmin" :label="$t('user.isAdmin')" />
+          <div class="text-center">
+            <v-btn :loading="isSubmitting" type="submit" color="green">
+              {{ $t('register.submit') }}
+            </v-btn>
+          </div>
+        </v-form>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -53,6 +93,7 @@ import { useI18n } from 'vue-i18n'
 import { useAxios } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const { t } = useI18n()
 const { api } = useAxios()
@@ -100,12 +141,16 @@ const email = useField('email')
 const password = useField('password')
 const passwordConfirm = useField('passwordConfirm')
 
+// 新增管理員選擇框
+const isAdmin = ref(false) // 管理員選項，預設為 false
+
 const submit = handleSubmit(async (values) => {
   try {
     await api.post('/user', {
       account: values.account,
       email: values.email,
       password: values.password,
+      role: isAdmin.value ? 1 : 0, // 根據選擇設置角色
     })
     createSnackbar({
       text: t('register.success'),
